@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { CURRICULUM } from './data/curriculum';
 import { LevelId, Lesson } from './types';
@@ -347,6 +348,7 @@ const App: React.FC = () => {
                 <div className={`bg-slate-50 rounded-[1.5rem] flex items-center justify-center overflow-hidden border border-slate-100 relative ${currentLesson.id === 'capstone-simulation' ? 'min-h-[500px]' : 'min-h-[260px] sm:min-h-[320px]'}`}>
                   <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#f97316 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
                   <div className="relative z-10 w-full p-4 flex justify-center h-full">
+                    {/* Wrap visual content in ErrorBoundary with required children provided */}
                     <ErrorBoundary>
                       {renderVisual()}
                     </ErrorBoundary>

@@ -1,7 +1,8 @@
-import React from 'react';
+
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
-  children: React.ReactNode;
+  children?: ReactNode;
 }
 
 interface State {
@@ -9,9 +10,11 @@ interface State {
   error: Error | null;
 }
 
-class ErrorBoundary extends React.Component<Props, State> {
+// Fixed ErrorBoundary class extending Component with proper generic types
+class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    // Initialize state within the constructor to resolve property existence errors
     this.state = {
       hasError: false,
       error: null
@@ -22,11 +25,12 @@ class ErrorBoundary extends React.Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
   }
 
   render() {
+    // Correctly access state through this.state
     if (this.state.hasError) {
       return (
         <div className="w-full h-full min-h-[300px] flex flex-col items-center justify-center bg-slate-50 rounded-2xl border-2 border-dashed border-slate-300 text-slate-500 p-8 text-center">
@@ -37,6 +41,7 @@ class ErrorBoundary extends React.Component<Props, State> {
           </p>
           <button
             className="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-slate-800 transition-colors"
+            // Correctly access setState through this.setState
             onClick={() => this.setState({ hasError: false, error: null })}
           >
             Try Again
@@ -45,6 +50,7 @@ class ErrorBoundary extends React.Component<Props, State> {
       );
     }
 
+    // Correctly access children through this.props
     return this.props.children;
   }
 }
