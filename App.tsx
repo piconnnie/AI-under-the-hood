@@ -42,13 +42,14 @@ import LifecycleVisual from './components/Visuals/LifecycleVisual';
 import EthicsVisual from './components/Visuals/EthicsVisual';
 import MasteryQuiz from './components/MasteryQuiz';
 import { ConceptExplainer } from './components/ConceptExplainer';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const CHANGE_LOG = [
+  { date: 'Oct 2024', change: 'Production Release v1.0' },
   { date: 'Oct 2024', change: 'Added Concept Explainers to visualize key terms for each lesson.' },
   { date: 'Oct 2024', change: 'Interactive Simulations added for RAG, Lifecycle, Ethics, and Predictive AI.' },
   { date: 'Oct 2024', change: 'Fixed AI hierarchy navigation (added deselect and close actions).' },
   { date: 'Oct 2024', change: 'Added Draggable Decision Boundaries to Classification module.' },
-  { date: 'Oct 2024', change: 'Interactive AI vs ML Hierarchy revealed.' },
   { date: 'Sep 2024', change: 'Implemented "Bharat" Design System and Color Palette.' }
 ];
 
@@ -170,7 +171,7 @@ const App: React.FC = () => {
           <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
             <div className="p-8 bg-slate-900 text-white border-b border-slate-800">
                <h2 className="text-2xl font-black gradient-text">Simulation Logs</h2>
-               <p className="text-slate-400 text-sm mt-1">Version 2.0: Bharat Release</p>
+               <p className="text-slate-400 text-sm mt-1">Version 1.0 Production</p>
             </div>
             <div className="p-8 space-y-4 max-h-[60vh] overflow-y-auto">
               {CHANGE_LOG.map((item, idx) => (
@@ -212,6 +213,13 @@ const App: React.FC = () => {
                             <div>
                                 <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">WhatsApp Chat</div>
                                 <div className="font-bold text-slate-800">+91 95604 07405</div>
+                            </div>
+                        </a>
+                        <a href="https://www.linkedin.com/in/alifraz" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl border-2 border-slate-100 hover:border-blue-200 hover:bg-blue-50 transition-all group">
+                            <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">in</div>
+                            <div>
+                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">LinkedIn Profile</div>
+                                <div className="font-bold text-slate-800">Connect with Faraz</div>
                             </div>
                         </a>
                     </div>
@@ -338,7 +346,11 @@ const App: React.FC = () => {
               <div className="relative bg-white border border-slate-200 rounded-[2rem] shadow-xl overflow-hidden p-2 sm:p-3">
                 <div className={`bg-slate-50 rounded-[1.5rem] flex items-center justify-center overflow-hidden border border-slate-100 relative ${currentLesson.id === 'capstone-simulation' ? 'min-h-[500px]' : 'min-h-[260px] sm:min-h-[320px]'}`}>
                   <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#f97316 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
-                  <div className="relative z-10 w-full p-4 flex justify-center h-full">{renderVisual()}</div>
+                  <div className="relative z-10 w-full p-4 flex justify-center h-full">
+                    <ErrorBoundary>
+                      {renderVisual()}
+                    </ErrorBoundary>
+                  </div>
                 </div>
               </div>
 
