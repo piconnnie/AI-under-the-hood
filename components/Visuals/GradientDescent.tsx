@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 
 const GradientDescent: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
   const [ballX, setBallX] = useState(60);
   const [learningRate, setLearningRate] = useState(0.1);
   const [step, setStep] = useState(0);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number>(0);
 
   // Parabola function approximation for the visual path: y = a(x-h)^2 + k
   // Vertex (h, k) approx at (200, 185)
@@ -142,4 +141,3 @@ const GradientDescent: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) =>
 };
 
 export default GradientDescent;
-    

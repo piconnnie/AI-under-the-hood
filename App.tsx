@@ -57,6 +57,7 @@ const App: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showMasteryQuiz, setShowMasteryQuiz] = useState(false);
   const [showMentorship, setShowMentorship] = useState(false);
+  const [visitorCount, setVisitorCount] = useState(428);
   
   // Theme state
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -73,6 +74,16 @@ const App: React.FC = () => {
       document.documentElement.classList.remove('dark');
     }
   }, [theme]);
+
+  // Simulate live visitors
+  useEffect(() => {
+    const interval = setInterval(() => {
+        if (Math.random() > 0.6) {
+            setVisitorCount(prev => prev + 1);
+        }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Toggles for simplistic UI
   const [showEli5, setShowEli5] = useState(false);
@@ -286,7 +297,11 @@ const App: React.FC = () => {
              <button onClick={() => setShowMentorship(true)} className="w-full py-3 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-md transition-all font-bold text-xs flex items-center justify-center gap-2">
                 <i className="fa-solid fa-rocket"></i> Get Mentorship
             </button>
-            <div className="mt-4 text-[10px] text-slate-400 dark:text-slate-600 text-center font-medium">
+            <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                <span>{visitorCount.toLocaleString()} Learners</span>
+            </div>
+            <div className="mt-2 text-[10px] text-slate-400 dark:text-slate-600 text-center font-medium">
                 © 2026 Faraz Sharique Ali
             </div>
         </div>
