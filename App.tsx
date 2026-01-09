@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { CURRICULUM } from './data/curriculum';
 import { LevelId, Lesson } from './types';
@@ -41,6 +42,7 @@ import RAGVisual from './components/Visuals/RAGVisual';
 import LifecycleVisual from './components/Visuals/LifecycleVisual';
 import EthicsVisual from './components/Visuals/EthicsVisual';
 import FeatureEngineeringVisual from './components/Visuals/FeatureEngineeringVisual';
+import CopilotAutopilotVisual from './components/Visuals/CopilotAutopilotVisual';
 import MasteryQuiz from './components/MasteryQuiz';
 import { ConceptExplainer } from './components/ConceptExplainer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -201,7 +203,7 @@ const App: React.FC = () => {
       case 'llm-rag': return <RAGVisual isAnimating={isAnimating} />;
       case 'ai-lifecycle': return <LifecycleVisual isAnimating={isAnimating} />;
       case 'gain-lift': return <GainLiftVisual isAnimating={isAnimating} />;
-      case 'jtbd-agents': return <Diagrams id="jtbd-agents" />;
+      case 'jtbd-agents': return <CopilotAutopilotVisual isAnimating={isAnimating} />;
       case 'ethics-bias': return <EthicsVisual isAnimating={isAnimating} />;
       case 'xai-trust': return <XAIVisual isAnimating={isAnimating} />;
       case 'capstone-simulation': return <CapstoneVisual isAnimating={isAnimating} />;
