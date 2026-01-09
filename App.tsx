@@ -286,6 +286,9 @@ const App: React.FC = () => {
              <button onClick={() => setShowMentorship(true)} className="w-full py-3 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-md transition-all font-bold text-xs flex items-center justify-center gap-2">
                 <i className="fa-solid fa-rocket"></i> Get Mentorship
             </button>
+            <div className="mt-4 text-[10px] text-slate-400 dark:text-slate-600 text-center font-medium">
+                © 2026 Faraz Sharique Ali
+            </div>
         </div>
       </aside>
 
@@ -541,7 +544,7 @@ const App: React.FC = () => {
                         <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center text-3xl mx-auto mb-3">
                             <i className="fa-solid fa-user-astronaut"></i>
                         </div>
-                        <p className="text-sm text-slate-600 dark:text-slate-300">Connect with Faraz for 1:1 coaching.</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-300">Need tailored, personalized mentorship or career guidance? Reach out to Faraz using the methods below.</p>
                     </div>
                     <a href="mailto:fraz.iimi@gmail.com" className="flex items-center gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all group">
                         <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400 flex items-center justify-center group-hover:text-indigo-600 dark:group-hover:text-indigo-400"><i className="fa-solid fa-envelope"></i></div>
