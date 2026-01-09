@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 type ScenarioId = 'TMT' | 'RETAIL' | 'BFSI' | 'LSHC';
@@ -289,7 +290,6 @@ const CapstoneVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => 
   const [industry, setIndustry] = useState<ScenarioId | null>(null);
   const [stage, setStage] = useState(0);
   const [score, setScore] = useState(0);
-  const [history, setHistory] = useState<any[]>([]);
   const [finished, setFinished] = useState(false);
   const [feedback, setFeedback] = useState<{text: string, outcome: string, score: number} | null>(null);
 
@@ -300,7 +300,6 @@ const CapstoneVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => 
     setIndustry(id);
     setStage(0);
     setScore(0);
-    setHistory([]);
     setFinished(false);
     setFeedback(null);
   };
@@ -309,7 +308,6 @@ const CapstoneVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => 
     if (!currentStage || !activeScenario) return;
     setFeedback({ text: option.feedback, outcome: option.outcome, score: option.score });
     setScore(s => s + option.score);
-    setHistory([...history, { stage: currentStage.name, choice: option.text, score: option.score }]);
   };
 
   const nextStage = () => {
@@ -325,7 +323,6 @@ const CapstoneVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => 
     setIndustry(null);
     setStage(0);
     setScore(0);
-    setHistory([]);
     setFinished(false);
     setFeedback(null);
   };
@@ -333,26 +330,30 @@ const CapstoneVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => 
   // 1. Industry Selection Screen
   if (!industry) {
     return (
-        <div className="w-full h-full bg-slate-50 rounded-[2rem] overflow-hidden border-4 border-slate-100 flex flex-col p-6 shadow-inner relative">
+        <div className="w-full h-full bg-slate-50 rounded-[2rem] overflow-hidden border-4 border-slate-100 flex flex-col p-8 shadow-inner relative">
             <div className="text-center mb-6">
-                <h2 className="text-2xl font-black text-slate-800">Select Your Domain</h2>
-                <p className="text-slate-500 text-sm font-medium">Choose an industry to start the AI simulation.</p>
+                <div className="inline-block p-3 bg-white rounded-2xl shadow-sm mb-3 text-2xl">🏢</div>
+                <h2 className="text-2xl font-black text-slate-800">AI Product Simulator</h2>
+                <p className="text-slate-500 text-sm font-medium mt-1">Select an industry to face real-world trade-offs.</p>
             </div>
             
-            <div className="grid grid-cols-2 gap-4 h-full overflow-y-auto pb-4 custom-scrollbar">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 overflow-y-auto custom-scrollbar p-1">
                 {Object.values(SCENARIOS).map((s) => (
                     <button 
                         key={s.id}
                         onClick={() => handleIndustrySelect(s.id)}
-                        className="bg-white p-4 rounded-2xl border-2 border-slate-200 hover:border-indigo-500 hover:shadow-lg transition-all text-left group flex flex-col gap-2 relative overflow-hidden"
+                        className="relative bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/10 hover:shadow-xl transition-all text-left group flex flex-col justify-between overflow-hidden"
                     >
-                        <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity text-6xl transform translate-x-2 -translate-y-2">
-                            {s.icon}
+                        <div className="absolute -right-4 -top-4 text-8xl opacity-5 group-hover:opacity-10 transition-opacity rotate-12 grayscale group-hover:grayscale-0">{s.icon}</div>
+                        
+                        <div className="relative z-10">
+                            <span className="text-4xl mb-3 block filter drop-shadow-sm">{s.icon}</span>
+                            <div className="font-black text-slate-800 text-lg group-hover:text-indigo-700 transition-colors">{s.title}</div>
+                            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{s.id} Sector</div>
                         </div>
-                        <span className="text-3xl">{s.icon}</span>
-                        <div>
-                            <div className="font-black text-slate-700 group-hover:text-indigo-600 text-sm">{s.title}</div>
-                            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{s.id}</div>
+                        
+                        <div className="relative z-10 mt-4 flex items-center gap-2 text-xs font-bold text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">
+                            Start Simulation <span>→</span>
                         </div>
                     </button>
                 ))}
@@ -366,29 +367,34 @@ const CapstoneVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => 
     return (
       <div className="w-full h-full bg-slate-900 rounded-[2rem] p-8 flex flex-col items-center justify-center text-white relative overflow-hidden border-4 border-slate-800">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-900/40 via-slate-900 to-slate-900" />
-        <div className="z-10 text-center space-y-6 animate-enter">
-          <div className="text-6xl animate-bounce">
+        <div className="z-10 text-center space-y-6 animate-enter w-full max-w-md">
+          <div className="text-7xl animate-bounce mb-4">
             {score >= 25 ? '🏆' : score >= 15 ? '📈' : '📚'}
           </div>
-          <h2 className="text-2xl font-black">{activeScenario?.title} Complete</h2>
-          <div className="text-xl">
-             Final Score: <span className={score >= 25 ? "text-emerald-400" : "text-amber-400"}>{score} / 30</span>
+          <div>
+            <h2 className="text-2xl font-black mb-2">{activeScenario?.title} Complete</h2>
+            <div className="inline-block bg-slate-800 px-6 py-2 rounded-full border border-slate-700">
+               <span className="text-slate-400 text-sm font-bold uppercase tracking-wider mr-2">Final Score</span>
+               <span className={`text-xl font-black ${score >= 25 ? "text-emerald-400" : "text-amber-400"}`}>{score} / 30</span>
+            </div>
           </div>
-          <p className="text-slate-400 max-w-md mx-auto text-sm">
-            {score >= 25 ? "You demonstrated excellent product judgment for this industry!" : "Good effort. Each industry has unique constraints. Try again!"}
+          
+          <p className="text-slate-400 text-sm leading-relaxed border-t border-slate-800 pt-4">
+            {score >= 25 ? "Outstanding! You balanced strategy, ethics, and technical feasibility perfectly." : "Good effort. Review the feedback to understand where the trade-offs led to suboptimal outcomes."}
           </p>
-          <div className="flex gap-3 justify-center">
+          
+          <div className="grid grid-cols-2 gap-3 pt-4">
             <button 
                 onClick={() => handleIndustrySelect(industry)}
-                className="px-6 py-3 bg-indigo-600 rounded-xl font-bold hover:bg-indigo-500 transition-colors text-xs uppercase tracking-widest"
+                className="px-4 py-3 bg-indigo-600 rounded-xl font-bold hover:bg-indigo-500 transition-colors text-xs uppercase tracking-widest shadow-lg shadow-indigo-900/50"
             >
-                Retry {industry}
+                Retry Scenario
             </button>
             <button 
                 onClick={reset}
-                className="px-6 py-3 bg-slate-700 rounded-xl font-bold hover:bg-slate-600 transition-colors text-xs uppercase tracking-widest"
+                className="px-4 py-3 bg-slate-800 rounded-xl font-bold hover:bg-slate-700 transition-colors text-xs uppercase tracking-widest border border-slate-700"
             >
-                Choose New Domain
+                Change Industry
             </button>
           </div>
         </div>
@@ -400,73 +406,114 @@ const CapstoneVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => 
   if (!activeScenario || !currentStage) return null;
 
   return (
-    <div className="w-full h-full bg-white rounded-[2rem] overflow-hidden border-4 border-slate-100 flex flex-col relative shadow-inner">
+    <div className="w-full h-full bg-slate-50 rounded-[2rem] overflow-hidden border-4 border-slate-100 flex flex-col relative shadow-inner">
         {/* Header */}
-        <div className="bg-slate-900 text-white p-4 flex justify-between items-center flex-shrink-0">
-            <div>
-                <div className="text-[10px] font-black uppercase tracking-widest text-indigo-400 flex items-center gap-1">
-                   <button onClick={reset} className="hover:text-white transition-colors">← CHANGE</button>
-                   <span>• {industry}</span>
+        <div className="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-md z-20">
+            <div className="flex items-center gap-3">
+                <button onClick={reset} className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
+                    <i className="fa-solid fa-arrow-left"></i>
+                </button>
+                <div>
+                    <div className="text-[10px] font-black uppercase tracking-widest text-indigo-400">{industry} Sector</div>
+                    <div className="font-bold text-sm leading-none">{activeScenario.title}</div>
                 </div>
-                <div className="font-bold text-sm">{activeScenario.title}</div>
             </div>
-            <div className="text-right">
-                <div className="text-[10px] text-slate-400 uppercase tracking-widest">Score</div>
-                <div className="font-mono font-bold text-emerald-400">{score}</div>
+            <div className="flex items-center gap-2 bg-slate-800 px-3 py-1 rounded-lg border border-slate-700">
+                <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Score</span>
+                <span className="font-mono font-bold text-emerald-400">{score}</span>
             </div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 p-6 flex flex-col items-center justify-center relative bg-slate-50 overflow-y-auto custom-scrollbar">
-           {!feedback ? (
-             <div className="w-full max-w-lg space-y-4 animate-enter my-auto">
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <div className="flex items-center gap-2 mb-3">
-                        <span className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-[10px] font-black uppercase">Decision {stage + 1}/3</span>
-                        <span className="text-slate-400 text-xs font-bold uppercase">{currentStage.name}</span>
+        {/* Game Area */}
+        <div className="flex-1 flex flex-col p-4 sm:p-6 overflow-y-auto custom-scrollbar">
+            
+            {/* Progress Bar */}
+            <div className="flex gap-2 mb-6 w-full max-w-2xl mx-auto">
+                {[0, 1, 2].map(i => (
+                    <div key={i} className="flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                        <div 
+                            className={`h-full ${i < stage ? 'bg-indigo-500' : i === stage ? 'bg-indigo-500 animate-pulse' : 'bg-transparent'}`} 
+                            style={{ width: i <= stage ? '100%' : '0%' }}
+                        />
                     </div>
-                    {stage === 0 && (
-                        <div className="mb-4 text-xs font-medium text-slate-500 bg-slate-100 p-2 rounded-lg italic">
-                            Context: {activeScenario.context}
+                ))}
+            </div>
+
+            <div className="flex-1 flex flex-col justify-center w-full max-w-2xl mx-auto h-full">
+                {!feedback ? (
+                    <div className="space-y-6 animate-enter">
+                        {/* Context Card */}
+                        <div className="bg-white p-5 rounded-2xl border border-indigo-100 shadow-sm flex gap-4 items-start">
+                            <div className="bg-indigo-50 text-indigo-600 w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
+                                {activeScenario.icon}
+                            </div>
+                            <div>
+                                <div className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">Mission Context</div>
+                                <div className="text-sm text-slate-700 font-medium leading-relaxed">
+                                    {activeScenario.context}
+                                </div>
+                            </div>
                         </div>
-                    )}
-                    <p className="text-slate-800 font-medium text-lg leading-snug">
-                        {currentStage.question}
-                    </p>
-                </div>
-                
-                <div className="grid gap-3">
-                    {currentStage.options.map((opt, i) => (
-                        <button 
-                            key={i}
-                            onClick={() => handleChoice(opt)}
-                            className="text-left p-4 bg-white border-2 border-slate-200 hover:border-indigo-500 hover:shadow-md rounded-xl transition-all group"
-                        >
-                            <span className="font-bold text-slate-700 group-hover:text-indigo-700">{opt.text}</span>
-                        </button>
-                    ))}
-                </div>
-             </div>
-           ) : (
-             <div className="w-full max-w-lg space-y-6 animate-enter text-center my-auto">
-                 <div className={`p-8 rounded-3xl border-4 ${feedback.score > 0 ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}`}>
-                    <div className="text-4xl mb-4">{feedback.score > 0 ? '✅' : '⚠️'}</div>
-                    <h3 className={`text-xl font-black mb-2 ${feedback.score > 0 ? 'text-emerald-800' : 'text-rose-800'}`}>
-                        {feedback.score > 0 ? 'Strategic Move!' : 'Risky Choice'}
-                    </h3>
-                    <p className="text-slate-600 font-medium mb-4">{feedback.outcome}</p>
-                    <div className="bg-white/60 p-4 rounded-xl text-xs font-bold text-slate-500 uppercase">
-                        Expert Feedback: {feedback.text}
+
+                        {/* Question Section */}
+                        <div className="space-y-4">
+                            <div className="text-center space-y-2 mb-2">
+                                <span className="inline-block px-3 py-1 bg-slate-200 text-slate-600 text-[10px] font-black uppercase rounded-full">Decision {stage+1}: {currentStage.name}</span>
+                                <h3 className="text-xl font-bold text-slate-900">{currentStage.question}</h3>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {currentStage.options.map((opt, i) => (
+                                    <button 
+                                        key={i}
+                                        onClick={() => handleChoice(opt)}
+                                        className="relative p-6 bg-white border-2 border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/30 rounded-2xl transition-all text-left flex flex-col gap-3 group h-full shadow-sm hover:shadow-md"
+                                    >
+                                        <div className="absolute top-4 right-4 w-6 h-6 rounded-full border-2 border-slate-200 group-hover:border-indigo-500 flex items-center justify-center">
+                                            <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        </div>
+                                        <span className="font-bold text-slate-700 group-hover:text-indigo-900 text-base pr-6">{opt.text}</span>
+                                        <span className="text-[10px] text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest font-bold mt-auto">Select Option</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     </div>
-                 </div>
-                 <button 
-                    onClick={nextStage}
-                    className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-lg"
-                 >
-                    Next Stage →
-                 </button>
-             </div>
-           )}
+                ) : (
+                    <div className="flex flex-col items-center justify-center h-full animate-enter gap-8 py-4">
+                        {/* Result Card */}
+                        <div className={`w-full max-w-md p-8 rounded-3xl border-4 text-center shadow-xl relative overflow-hidden bg-white ${feedback.score > 0 ? 'border-emerald-100' : 'border-rose-100'}`}>
+                            {/* Background decoration */}
+                            <div className={`absolute top-0 left-0 w-full h-2 ${feedback.score > 0 ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+                            
+                            <div className="text-6xl mb-6">{feedback.score > 0 ? '🎯' : '⚠️'}</div>
+                            
+                            <h3 className={`text-2xl font-black mb-3 ${feedback.score > 0 ? 'text-emerald-800' : 'text-rose-800'}`}>
+                                {feedback.score > 0 ? 'Strategic Success!' : 'Critical Error'}
+                            </h3>
+                            
+                            <p className="text-slate-700 font-medium text-lg mb-6 leading-relaxed">
+                                {feedback.outcome}
+                            </p>
+                            
+                            <div className={`p-4 rounded-xl text-left flex gap-3 ${feedback.score > 0 ? 'bg-emerald-50' : 'bg-rose-50'}`}>
+                                <div className="text-lg mt-0.5">💡</div>
+                                <div>
+                                    <span className={`font-bold uppercase text-[9px] block mb-1 opacity-70 ${feedback.score > 0 ? 'text-emerald-800' : 'text-rose-800'}`}>Expert Insight</span>
+                                    <span className={`text-xs ${feedback.score > 0 ? 'text-emerald-900' : 'text-rose-900'}`}>{feedback.text}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button 
+                            onClick={nextStage}
+                            className="px-10 py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 active:translate-y-0 flex items-center gap-3 text-sm uppercase tracking-widest"
+                        >
+                            {stage < 2 ? "Next Challenge" : "View Final Results"} <i className="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     </div>
   );

@@ -39,6 +39,10 @@ const EXPLANATIONS: Record<string, ExplainerItem[]> = {
     { icon: '🏗️', title: 'Transformation', desc: 'Converting messy real-world data (text, dates, categories) into clean mathematical signals.' },
     { icon: '🧠', title: 'Domain Knowledge', desc: 'Using human insight (e.g., "Weekends are busy") to create meaningful new inputs.' }
   ],
+  'rice-ai': [
+    { icon: '⚖️', title: 'Confidence', desc: 'The most critical factor. If you lack data to back your idea, Confidence is low, and the RICE score drops to near zero.' },
+    { icon: '🏋️', title: 'Effort', desc: 'The denominator. A high-effort AI project (e.g., building a custom LLM) needs massive Impact to be worth the cost.' }
+  ],
 
   // Level 3: Core Mechanics
   'linear-reg': [
@@ -135,6 +139,14 @@ const EXPLANATIONS: Record<string, ExplainerItem[]> = {
     { icon: '🌬️', title: 'Data Drift', desc: 'When the real world changes (e.g., new slang), old training data becomes obsolete.' },
     { icon: '🔄', title: 'Retraining Loop', desc: 'The necessary process of constantly updating the model with fresh data.' }
   ],
+  'gain-lift': [
+    { icon: '🚀', title: 'Lift', desc: 'The multiplier of how much better your model is compared to random guessing (e.g., "3x better").' },
+    { icon: '🎯', title: 'Gain', desc: 'The % of targets captured. E.g., "We can find 80% of fraudsters by checking only top 20% of risky transactions."' }
+  ],
+  'jtbd-agents': [
+    { icon: '✈️', title: 'Copilot', desc: 'The Human is the pilot. AI suggests, you decide. You are liable for the outcome.' },
+    { icon: '🤖', title: 'Agent', desc: 'The AI is the pilot. It takes actions (e.g., refunds a user) autonomously. The system is liable.' }
+  ],
   'ethics-bias': [
     { icon: '⚖️', title: 'Historical Bias', desc: 'If past human decisions were biased, the data is biased, and the model will be biased.' },
     { icon: '🛠️', title: 'Rebalancing', desc: 'The active process of adjusting the dataset to ensure fair outcomes.' }
@@ -151,15 +163,15 @@ export const ConceptExplainer: React.FC<{ lessonId: string }> = ({ lessonId }) =
   if (!concepts) return null;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 animate-enter">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 animate-enter">
       {concepts.map((c, i) => (
-        <div key={i} className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200/60 dark:border-slate-800/60 p-3 rounded-xl flex gap-3 items-start shadow-sm hover:bg-white dark:hover:bg-slate-800 hover:shadow-md transition-all duration-300 group">
-            <div className="bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0 group-hover:scale-110 transition-transform">
+        <div key={i} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl flex gap-4 items-start shadow-sm hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-md transition-all duration-300 group">
+            <div className="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 w-10 h-10 rounded-lg flex items-center justify-center text-lg flex-shrink-0 group-hover:scale-110 transition-transform">
                 {c.icon}
             </div>
             <div>
-                <h4 className="text-[10px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest mb-0.5">{c.title}</h4>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug font-medium">{c.desc}</p>
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1">{c.title}</h4>
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{c.desc}</p>
             </div>
         </div>
       ))}

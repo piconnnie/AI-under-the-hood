@@ -953,5 +953,38 @@ export const CURRICULUM: Level[] = [
         }
       }
     ]
+  },
+  {
+    id: 10,
+    title: "Further Learning",
+    unlocked: true,
+    lessons: [
+      {
+        id: "learning-resources",
+        title: "Additional Resources",
+        subtitle: "Continue your journey",
+        shortDescription: [
+          "Curated list of top-tier AI educators.",
+          "YouTube channels, blogs, and podcasts.",
+          "From basics to cutting-edge research."
+        ],
+        eli5: "You've finished the intro course! Now go watch these smart people to become an expert.",
+        analogy: {
+          title: "The Library",
+          description: "We gave you the map. These resources are the library where you can study every detail."
+        },
+        visualType: 'interactive', 
+        animationPrompt: "List of links",
+        takeaway: "Learning AI is a continuous journey. Stay curious!",
+        quiz: {
+          question: "What is the best way to keep learning AI?",
+          options: [
+            { text: "Stop now, you know everything", isCorrect: false },
+            { text: "Build things and follow great educators", isCorrect: true }
+          ],
+          explanation: "The field moves fast. Continuous learning is key."
+        }
+      }
+    ]
   }
 ];
