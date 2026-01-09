@@ -152,13 +152,13 @@ export const ConceptExplainer: React.FC<{ lessonId: string }> = ({ lessonId }) =
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 animate-enter">
       {concepts.map((c, i) => (
-        <div key={i} className="bg-white/70 backdrop-blur-sm border border-slate-200/60 p-3 rounded-xl flex gap-3 items-start shadow-sm hover:bg-white hover:shadow-md transition-all duration-300 group">
-            <div className="bg-indigo-50 text-indigo-600 w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0 group-hover:scale-110 transition-transform">
+        <div key={i} className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border border-slate-200/60 dark:border-slate-800/60 p-3 rounded-xl flex gap-3 items-start shadow-sm hover:bg-white dark:hover:bg-slate-800 hover:shadow-md transition-all duration-300 group">
+            <div className="bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0 group-hover:scale-110 transition-transform">
                 {c.icon}
             </div>
             <div>
-                <h4 className="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-0.5">{c.title}</h4>
-                <p className="text-[11px] text-slate-600 leading-snug font-medium">{c.desc}</p>
+                <h4 className="text-[10px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest mb-0.5">{c.title}</h4>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-snug font-medium">{c.desc}</p>
             </div>
         </div>
       ))}

@@ -927,28 +927,28 @@ export const CURRICULUM: Level[] = [
     lessons: [
       {
         id: "capstone-simulation",
-        title: "LegalTech Disruptor",
-        subtitle: "Put it all together",
+        title: "The AI Product Simulator",
+        subtitle: "Choose Your Industry",
         shortDescription: [
-          "A 3-stage simulation of a real AI PM challenge.",
-          "Make decisions on Strategy, Data, and UX.",
-          "See the consequences of your choices."
+          "Select a domain: TMT, Retail, BFSI, or Health.",
+          "Navigate Strategy, Data, and UX trade-offs.",
+          "See how AI applies differently across industries."
         ],
-        eli5: "It's the final boss battle. Test your skills in a safe environment.",
+        eli5: "It's the final boss battle. Pick your battleground and test your skills.",
         analogy: {
           title: "The Flight Simulator",
           description: "Crash the plane here so you don't crash it in real life."
         },
         visualType: 'interactive',
         animationPrompt: "Interactive Game",
-        takeaway: "Great AI products require Strategy, Data, and Empathy combined.",
+        takeaway: "Context is King. AI strategy depends entirely on the industry constraints.",
         quiz: {
-          question: "Ready to start?",
+          question: "Which industry requires the highest level of Explainability (XAI)?",
           options: [
-            { text: "Let's go!", isCorrect: true },
-            { text: "Not yet", isCorrect: false }
+            { text: "Retail (Fashion Recommendations)", isCorrect: false },
+            { text: "BFSI (Loan Approvals)", isCorrect: true }
           ],
-          explanation: "Good luck!"
+          explanation: "In Finance (and Health), you legally often must explain WHY a decision was made."
         }
       }
     ]

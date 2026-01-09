@@ -24,6 +24,24 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          darkMode: 'class',
+          theme: {
+            extend: {
+              colors: {
+                slate: {
+                    850: '#151e2e',
+                    950: '#020617',
+                }
+              },
+              fontFamily: {
+                sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+              }
+            }
+          }
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -40,6 +58,10 @@
             color: #334155;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+        }
+        .dark body {
+            background-color: #0f172a;
+            color: #cbd5e1;
         }
         .glass {
             background: rgba(255, 255, 255, 0.7);
@@ -66,6 +88,11 @@
             background: #94a3b8;
         }
         
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-color: #1e293b;
+        }
+
         /* Animations */
         @keyframes subtle-fade-in {
             from { opacity: 0; transform: translateY(15px) scale(0.98); }
@@ -117,7 +144,7 @@
 }
 </script>
 </head>
-<body class="selection:bg-indigo-100 selection:text-indigo-900">
+<body class="selection:bg-indigo-100 selection:text-indigo-900 dark:selection:bg-indigo-900 dark:selection:text-indigo-100">
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>
 </body>
