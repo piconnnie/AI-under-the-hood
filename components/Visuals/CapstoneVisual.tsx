@@ -182,11 +182,11 @@ const SCENARIOS: Record<ScenarioId, Scenario> = {
       {
         id: 2,
         name: "Feature Engineering",
-        question: "Your data scientist suggests using 'Zip Code' to improve accuracy. It correlates with wealth.",
+        question: "Your data scientist suggests using 'PIN Code' to improve accuracy. It correlates with wealth.",
         options: [
           {
             text: "Use it. Accuracy is everything.",
-            feedback: "Illegal/Unethical. Zip code is a proxy for race/bias (Redlining).",
+            feedback: "Illegal/Unethical. PIN code is a proxy for community/bias (Redlining).",
             score: 0,
             outcome: "Regulators audit you. Massive fine for bias."
           },

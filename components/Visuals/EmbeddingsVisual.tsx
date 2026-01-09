@@ -22,7 +22,7 @@ const INITIAL_WORDS: WordPoint[] = [
   { id: '1', label: 'Pizza', category: 'food', x: 50, y: 50 },
   { id: '2', label: 'Burger', category: 'food', x: 80, y: 50 },
   { id: '3', label: 'Apple', category: 'food', x: 50, y: 80 },
-  { id: '4', label: 'Taco', category: 'food', x: 80, y: 80 },
+  { id: '4', label: 'Samosa', category: 'food', x: 80, y: 80 },
   // Tech
   { id: '5', label: 'Laptop', category: 'tech', x: 300, y: 200 },
   { id: '6', label: 'Phone', category: 'tech', x: 330, y: 200 },
@@ -280,4 +280,3 @@ const EmbeddingsVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) =
 };
 
 export default EmbeddingsVisual;
-    

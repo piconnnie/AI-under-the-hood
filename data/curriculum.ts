@@ -108,7 +108,7 @@ export const CURRICULUM: Level[] = [
           question: "Which task is BAD for Generative AI?",
           options: [
             { text: "Summarizing reviews", isCorrect: false },
-            { text: "Calculating exact sales tax", isCorrect: true }
+            { text: "Calculating exact GST", isCorrect: true }
           ],
           explanation: "Math requires 100% accuracy. GenAI hallucinations. Use standard code for math."
         }
@@ -182,7 +182,7 @@ export const CURRICULUM: Level[] = [
           "Feature Engineering transforms it into math (e.g., Date -> 'Is_Weekend').",
           "Better features usually beat better algorithms."
         ],
-        eli5: "It's like cooking. You don't give a chef a whole raw cow; you butcher it into steaks first. You process raw data so the model can digest it easily.",
+        eli5: "It's like refining crude oil. You can't put raw oil into a car engine; it needs to be processed into petrol. Similarly, models can't run on raw data; they need refined 'features'.",
         analogy: {
           title: "The Translator",
           description: "Raw data is a foreign language. Feature engineering translates it into the language the model speaks (Math & Patterns)."
