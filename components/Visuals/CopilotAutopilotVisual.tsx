@@ -154,7 +154,7 @@ const CopilotAutopilotVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimatin
               
               <div className="p-6 h-40 font-mono text-xs space-y-4 relative">
                   <div className="text-slate-500 border-b border-slate-800 pb-2 mb-2">
-                      > Goal: Optimize cloud spend
+                      &gt; Goal: Optimize cloud spend
                   </div>
                   
                   {steps.map((s, i) => {
