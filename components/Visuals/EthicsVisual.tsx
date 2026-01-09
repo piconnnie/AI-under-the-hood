@@ -38,7 +38,7 @@ const EthicsVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
   };
 
   return (
-    <div className="relative w-full h-80 bg-white rounded-[2.5rem] overflow-hidden border-4 border-slate-50 flex flex-col p-6 shadow-inner">
+    <div className="relative w-full min-h-[26rem] h-auto bg-white rounded-[2.5rem] overflow-hidden border-4 border-slate-50 flex flex-col p-6 shadow-inner">
       <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-2">
               <span className="text-2xl">⚖️</span>
@@ -53,20 +53,20 @@ const EthicsVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
                 onClick={() => { setBalancedData(false); setResults(null); }}
                 className={`px-3 py-1.5 rounded-md text-[10px] font-black uppercase transition-all ${!balancedData ? 'bg-rose-500 text-white shadow-md' : 'text-slate-500'}`}
               >
-                Historical Data (Biased)
+                Biased
               </button>
               <button 
                 onClick={() => { setBalancedData(true); setResults(null); }}
                 className={`px-3 py-1.5 rounded-md text-[10px] font-black uppercase transition-all ${balancedData ? 'bg-emerald-500 text-white shadow-md' : 'text-slate-500'}`}
               >
-                Re-balanced Data (Fair)
+                Fair
               </button>
           </div>
       </div>
 
-      <div className="flex gap-4 flex-1">
+      <div className="flex flex-col sm:flex-row gap-4 flex-1">
           {/* Training Data View */}
-          <div className="w-1/3 bg-slate-50 rounded-xl border border-slate-100 p-3 flex flex-col">
+          <div className="w-full sm:w-1/3 bg-slate-50 rounded-xl border border-slate-100 p-3 flex flex-col">
               <span className="text-[9px] font-black text-slate-400 uppercase mb-2">Training Set</span>
               <div className="flex flex-wrap content-start gap-1 flex-1">
                   {(balancedData ? Array.from({ length: 20 }) : candidates).map((_, i) => {
@@ -83,7 +83,7 @@ const EthicsVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
           </div>
 
           {/* Process Arrow */}
-          <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col justify-center items-center py-2 sm:py-0">
               <button 
                 onClick={runSimulation}
                 disabled={processing}
@@ -94,7 +94,7 @@ const EthicsVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
           </div>
 
           {/* Results View */}
-          <div className="flex-1 bg-white border-2 border-slate-100 rounded-xl p-4 flex flex-col justify-center items-center relative overflow-hidden">
+          <div className="flex-1 bg-white border-2 border-slate-100 rounded-xl p-4 flex flex-col justify-center items-center relative overflow-hidden min-h-[140px]">
               {results ? (
                   <div className="w-full space-y-4 animate-enter">
                       <div>

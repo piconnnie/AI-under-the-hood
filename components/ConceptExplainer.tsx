@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface ExplainerItem {
@@ -34,9 +35,9 @@ const EXPLANATIONS: Record<string, ExplainerItem[]> = {
     { icon: '📊', title: 'Distribution', desc: 'The shape of your data. Skewed data leads to biased models.' },
     { icon: '🚨', title: 'Outliers', desc: 'Extreme values that can confuse the model. Usually removed during cleaning.' }
   ],
-  'wizard-of-oz': [
-    { icon: '🎭', title: 'The Curtain', desc: 'The user sees a working AI product.' },
-    { icon: '👨‍💻', title: 'The Human', desc: 'Behind the scenes, a human manually performs the task to validate demand before coding.' }
+  'feature-engineering': [
+    { icon: '🏗️', title: 'Transformation', desc: 'Converting messy real-world data (text, dates, categories) into clean mathematical signals.' },
+    { icon: '🧠', title: 'Domain Knowledge', desc: 'Using human insight (e.g., "Weekends are busy") to create meaningful new inputs.' }
   ],
 
   // Level 3: Core Mechanics

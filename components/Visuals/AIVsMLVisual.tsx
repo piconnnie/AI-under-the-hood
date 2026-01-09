@@ -31,7 +31,7 @@ const AIVsMLVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
 
   return (
     <div 
-      className="relative w-full h-80 bg-white rounded-[2.5rem] overflow-hidden border-4 border-slate-50 flex flex-col items-center justify-center p-4 cursor-pointer"
+      className="relative w-full h-96 bg-white rounded-[2.5rem] overflow-hidden border-4 border-slate-50 flex flex-col items-center justify-center p-4 cursor-pointer"
       onClick={() => setSelected(null)}
     >
       <svg viewBox="0 0 400 340" className="w-full h-full">

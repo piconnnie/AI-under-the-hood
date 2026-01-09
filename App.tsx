@@ -40,6 +40,7 @@ import PredictiveGenVisual from './components/Visuals/PredictiveGenVisual';
 import RAGVisual from './components/Visuals/RAGVisual';
 import LifecycleVisual from './components/Visuals/LifecycleVisual';
 import EthicsVisual from './components/Visuals/EthicsVisual';
+import FeatureEngineeringVisual from './components/Visuals/FeatureEngineeringVisual';
 import MasteryQuiz from './components/MasteryQuiz';
 import { ConceptExplainer } from './components/ConceptExplainer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -47,8 +48,6 @@ import ErrorBoundary from './components/ErrorBoundary';
 const App: React.FC = () => {
   const [currentLevelId, setCurrentLevelId] = useState<LevelId>(1);
   const [currentLessonId, setCurrentLessonId] = useState<string>('ai-hierarchy');
-  const [showEli5, setShowEli5] = useState(false);
-  const [showAnalogy, setShowAnalogy] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [quizAnswered, setQuizAnswered] = useState<boolean | null>(null);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
@@ -56,20 +55,35 @@ const App: React.FC = () => {
   const [showMasteryQuiz, setShowMasteryQuiz] = useState(false);
   const [showMentorship, setShowMentorship] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  
+  // Theme state with persistence
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        return savedTheme;
+      }
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+    }
+    return 'light';
+  });
 
   const eli5Ref = useRef<HTMLDivElement>(null);
   const analogyRef = useRef<HTMLDivElement>(null);
   const visualRef = useRef<HTMLDivElement>(null);
   const mainContentRef = useRef<HTMLDivElement>(null);
 
-  // Initialize theme from system preference or local storage could go here
+  // Apply theme class and persist to localStorage
   useEffect(() => {
+    const root = document.documentElement;
     if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
     }
+    localStorage.setItem('theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {
@@ -93,8 +107,6 @@ const App: React.FC = () => {
     }
     setCurrentLevelId(levelId);
     setCurrentLessonId(lessonId);
-    setShowEli5(false);
-    setShowAnalogy(false);
     setIsAnimating(false);
     setQuizAnswered(null);
     setSelectedOptionIndex(null);
@@ -142,24 +154,12 @@ const App: React.FC = () => {
     }
   };
 
-  const toggleEli5 = () => {
-    const newState = !showEli5;
-    setShowEli5(newState);
-    if (newState) {
-        setTimeout(() => {
-            eli5Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
-    }
+  const scrollToEli5 = () => {
+    eli5Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
-  const toggleAnalogy = () => {
-    const newState = !showAnalogy;
-    setShowAnalogy(newState);
-    if (newState) {
-        setTimeout(() => {
-            analogyRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
-    }
+  const scrollToAnalogy = () => {
+    analogyRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   const renderVisual = () => {
@@ -170,7 +170,7 @@ const App: React.FC = () => {
       case 'value-matrix': return <Diagrams id="value-matrix" />;
       case 'train-test': return <TrainTestVisual isAnimating={isAnimating} />;
       case 'eda': return <EDAVisual isAnimating={isAnimating} />;
-      case 'wizard-of-oz': return <Diagrams id="wizard-of-oz" />;
+      case 'feature-engineering': return <FeatureEngineeringVisual isAnimating={isAnimating} />;
       case 'rice-ai': return <Diagrams id="rice-ai" />;
       case 'linear-reg': return <LinearRegression isAnimating={isAnimating} />;
       case 'binary-class': return <BinaryClassification isAnimating={isAnimating} />;
@@ -370,10 +370,10 @@ const App: React.FC = () => {
                          <span className="hidden sm:inline">{isAnimating ? 'Stop' : 'Simulate'}</span>
                        </button>
                     )}
-                    <button onClick={toggleEli5} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${showEli5 ? 'bg-amber-100 text-amber-800' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-100 dark:border-slate-700'}`}>
-                      <span>🧸</span><span className="hidden sm:inline">ELI5 On</span>
+                    <button onClick={scrollToEli5} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-100 dark:border-slate-700`}>
+                      <span>🧸</span><span className="hidden sm:inline">ELI5</span>
                     </button>
-                    <button onClick={toggleAnalogy} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${showAnalogy ? 'bg-purple-100 text-purple-800' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-100 dark:border-slate-700'}`}>
+                    <button onClick={scrollToAnalogy} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-100 dark:border-slate-700`}>
                       <span>💡</span><span className="hidden sm:inline">Analogy</span>
                     </button>
                  </div>
@@ -405,25 +405,23 @@ const App: React.FC = () => {
             {currentLesson.id !== 'capstone-simulation' && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4">
                  <div className="lg:col-span-2 space-y-6">
-                    {showEli5 && (
-                      <div ref={eli5Ref} className="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/50 rounded-3xl p-6 sm:p-8 shadow-sm animate-enter relative overflow-hidden transition-colors">
-                        <div className="absolute -top-4 -right-4 text-8xl opacity-5 rotate-12 pointer-events-none">🧸</div>
-                        <h5 className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"/> Simple Explanation
-                        </h5>
-                        <p className="text-base text-amber-900 dark:text-amber-100 leading-relaxed font-bold italic">"{currentLesson.eli5}"</p>
-                      </div>
-                    )}
-                    {showAnalogy && (
-                      <div ref={analogyRef} className="bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-900/50 rounded-3xl p-6 sm:p-8 shadow-sm animate-enter relative overflow-hidden transition-colors">
-                        <div className="absolute -top-4 -right-4 text-8xl opacity-5 rotate-12 pointer-events-none">💡</div>
-                        <h5 className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                           <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"/> Real World Analogy
-                        </h5>
-                        <h6 className="text-base font-black text-purple-900 dark:text-purple-100 mb-2 uppercase tracking-tight">{currentLesson.analogy.title}</h6>
-                        <p className="text-sm text-purple-800 dark:text-purple-200 leading-relaxed font-medium">{currentLesson.analogy.description}</p>
-                      </div>
-                    )}
+                    <div ref={eli5Ref} className="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/50 rounded-3xl p-6 sm:p-8 shadow-sm animate-enter relative overflow-hidden transition-colors">
+                      <div className="absolute -top-4 -right-4 text-8xl opacity-5 rotate-12 pointer-events-none">🧸</div>
+                      <h5 className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"/> Simple Explanation
+                      </h5>
+                      <p className="text-base text-amber-900 dark:text-amber-100 leading-relaxed font-bold italic">"{currentLesson.eli5}"</p>
+                    </div>
+                    
+                    <div ref={analogyRef} className="bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-900/50 rounded-3xl p-6 sm:p-8 shadow-sm animate-enter relative overflow-hidden transition-colors">
+                      <div className="absolute -top-4 -right-4 text-8xl opacity-5 rotate-12 pointer-events-none">💡</div>
+                      <h5 className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"/> Real World Analogy
+                      </h5>
+                      <h6 className="text-base font-black text-purple-900 dark:text-purple-100 mb-2 uppercase tracking-tight">{currentLesson.analogy.title}</h6>
+                      <p className="text-sm text-purple-800 dark:text-purple-200 leading-relaxed font-medium">{currentLesson.analogy.description}</p>
+                    </div>
+                    
                     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm transition-colors">
                       <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-2 uppercase tracking-widest">
                          <span className="text-xl">📖</span> Core Concepts

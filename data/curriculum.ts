@@ -1,3 +1,4 @@
+
 import { Level } from '../types';
 
 export const CURRICULUM: Level[] = [
@@ -173,29 +174,29 @@ export const CURRICULUM: Level[] = [
         }
       },
       {
-        id: "wizard-of-oz",
-        title: "Wizard of Oz Testing",
-        subtitle: "Validation without Code",
+        id: "feature-engineering",
+        title: "Feature Engineering",
+        subtitle: "Turning Raw Data into Signals",
         shortDescription: [
-          "Validate demand before building the model.",
-          "A human manually generates the 'AI' response behind the scenes.",
-          "Saves massive engineering costs if users don't care."
+          "Raw data (text, timestamps) is often useless to a model.",
+          "Feature Engineering transforms it into math (e.g., Date -> 'Is_Weekend').",
+          "Better features usually beat better algorithms."
         ],
-        eli5: "Before building a robot butler, you dress up as a robot and serve drinks. If people hate it, you saved money on building the robot!",
+        eli5: "It's like cooking. You don't give a chef a whole raw cow; you butcher it into steaks first. You process raw data so the model can digest it easily.",
         analogy: {
-          title: "The Mechanical Turk",
-          description: "An 18th-century chess machine that looked like a robot but hid a human master inside."
+          title: "The Translator",
+          description: "Raw data is a foreign language. Feature engineering translates it into the language the model speaks (Math & Patterns)."
         },
-        visualType: 'diagram',
-        animationPrompt: "Human hidden inside a machine",
-        takeaway: "Don't code AI until you prove users want the output.",
+        visualType: 'interactive',
+        animationPrompt: "Transforming raw date string into multiple boolean/numeric signals",
+        takeaway: "Models need signals, not just data. Your job is to extract those signals.",
         quiz: {
-          question: "What is the goal of a Wizard of Oz test?",
+          question: "Why convert 'Date of Birth' into 'Age' for a model?",
           options: [
-            { text: "To train the model data", isCorrect: false },
-            { text: "To validate user demand without coding", isCorrect: true }
+            { text: "To save storage space", isCorrect: false },
+            { text: "Because 'Age' is a direct numerical signal relating to risk/behavior", isCorrect: true }
           ],
-          explanation: "It tests the value proposition of the output, not the technology itself."
+          explanation: "A timestamp (1990-01-01) is just a number. 'Age: 33' is a meaningful signal about life stage."
         }
       },
       {

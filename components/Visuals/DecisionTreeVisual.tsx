@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 type DecisionNode = { label: string; x: number; y: number; yes: number; no: number; isLeaf: false };
@@ -40,7 +39,7 @@ const DecisionTreeVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating })
   const currentNode = nodes[currentNodeId];
 
   return (
-    <div className="relative w-full h-72 bg-white rounded-[2.5rem] overflow-hidden border-4 border-slate-50 flex flex-col items-center justify-center p-8 shadow-inner">
+    <div className="relative w-full h-80 bg-white rounded-[2.5rem] overflow-hidden border-4 border-slate-50 flex flex-col items-center justify-center p-8 shadow-inner">
       <svg viewBox="0 0 400 240" className="w-full h-full pointer-events-auto">
         {/* Connections */}
         <g stroke="#e2e8f0" strokeWidth="2">

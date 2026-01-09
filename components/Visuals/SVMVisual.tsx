@@ -1,9 +1,29 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 
 const SVMVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
+  const [marginWidth, setMarginWidth] = useState(40);
+
   return (
-    <div className="relative w-full h-72 bg-white rounded-[2.5rem] overflow-hidden border-4 border-slate-50 flex items-center justify-center p-8">
+    <div className="relative w-full h-72 bg-white rounded-[2.5rem] overflow-hidden border-4 border-slate-50 flex flex-col items-center justify-center p-8">
+      <div className="absolute top-4 right-4 z-10 w-48 bg-white/90 p-3 rounded-xl border border-slate-100 shadow-sm backdrop-blur-sm">
+          <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-2 flex justify-between">
+              <span>Margin Width</span>
+              <span>{marginWidth}px</span>
+          </label>
+          <input 
+            type="range" 
+            min="10" max="80" 
+            value={marginWidth} 
+            onChange={(e) => setMarginWidth(parseInt(e.target.value))}
+            className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+          />
+          <div className="flex justify-between text-[8px] text-slate-400 mt-1 font-bold">
+            <span>Hard (Strict)</span>
+            <span>Soft (Flexible)</span>
+          </div>
+      </div>
+
       <svg viewBox="0 0 400 200" className="w-full h-full">
         {/* Points Group A */}
         <g fill="#3b82f6" fillOpacity="0.6">
@@ -22,12 +42,11 @@ const SVMVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
         </g>
 
         {/* The "Road" (Margin) */}
-        <g transform="rotate(-20, 200, 100)">
+        <g transform="rotate(-20, 200, 100)" className="transition-all duration-300 ease-out">
           <rect 
-            x="0" y="80" width="400" height="40" 
+            x="0" y={100 - marginWidth/2} width="400" height={marginWidth} 
             fill="#6366f1" 
-            fillOpacity={isAnimating ? "0.15" : "0.05"} 
-            className="transition-all duration-1000"
+            fillOpacity="0.1" 
           />
           {/* Decision Boundary */}
           <line 
@@ -35,16 +54,21 @@ const SVMVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
             stroke="#6366f1" 
             strokeWidth="3" 
             strokeDasharray="8" 
-            className={isAnimating ? "animate-[dash_20s_linear_infinite]" : ""}
           />
           {/* Margin Lines */}
-          <line x1="0" y1="80" x2="400" y2="80" stroke="#6366f1" strokeWidth="1" strokeOpacity="0.3" />
-          <line x1="0" y1="120" x2="400" y2="120" stroke="#6366f1" strokeWidth="1" strokeOpacity="0.3" />
+          <line x1="0" y1={100 - marginWidth/2} x2="400" y2={100 - marginWidth/2} stroke="#6366f1" strokeWidth="1" strokeOpacity="0.5" />
+          <line x1="0" y1={100 + marginWidth/2} x2="400" y2={100 + marginWidth/2} stroke="#6366f1" strokeWidth="1" strokeOpacity="0.5" />
         </g>
         
-        <text x="200" y="180" textAnchor="middle" className="text-[10px] font-black fill-indigo-500 uppercase tracking-widest">
-          The Widest Possible Road
-        </text>
+        {/* Violation Indicator */}
+        {marginWidth > 60 && (
+            <g className="animate-pulse">
+                <circle cx="100" cy="80" r="14" fill="none" stroke="#rose-500" strokeWidth="2" opacity="0.5" />
+                <text x="200" y="190" textAnchor="middle" className="text-[10px] font-black fill-rose-500 uppercase tracking-widest">
+                    Margin Violation (Soft Margin)
+                </text>
+            </g>
+        )}
       </svg>
     </div>
   );

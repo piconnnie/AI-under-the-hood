@@ -15,7 +15,7 @@ const PredictiveGenVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }
   };
 
   return (
-    <div className="relative w-full h-80 bg-slate-50 rounded-[2.5rem] overflow-hidden border-4 border-slate-100 flex flex-col items-center p-6 shadow-inner">
+    <div className="relative w-full min-h-[24rem] h-auto bg-slate-50 rounded-[2.5rem] overflow-hidden border-4 border-slate-100 flex flex-col items-center p-6 shadow-inner">
       {/* Mode Switcher */}
       <div className="flex bg-white rounded-xl p-1 shadow-sm mb-8 z-10 border border-slate-200">
         <button
@@ -32,7 +32,7 @@ const PredictiveGenVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }
         </button>
       </div>
 
-      <div className="flex items-center gap-6 w-full justify-center">
+      <div className="flex flex-col sm:flex-row items-center gap-6 w-full justify-center flex-1">
         {/* Input Side */}
         <div className="flex flex-col items-center gap-3">
            <div className={`w-24 h-24 rounded-2xl border-2 flex items-center justify-center text-4xl shadow-sm bg-white ${mode === 'predictive' ? 'border-blue-200' : 'border-purple-200'}`}>
@@ -44,10 +44,10 @@ const PredictiveGenVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }
         </div>
 
         {/* The Machine / Arrow */}
-        <div className="flex-1 max-w-[120px] relative flex flex-col items-center justify-center">
+        <div className="w-full sm:flex-1 max-w-[120px] h-12 sm:h-auto relative flex flex-col items-center justify-center">
              {/* Flow Line */}
-             <div className="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
-                {processing && <div className={`h-full w-1/3 rounded-full animate-[shimmer_1s_infinite] ${mode === 'predictive' ? 'bg-blue-500' : 'bg-purple-500'}`} />}
+             <div className="w-1 sm:w-full h-full sm:h-1 bg-slate-200 rounded-full overflow-hidden">
+                {processing && <div className={`w-full sm:h-full sm:w-1/3 rounded-full animate-[shimmer_1s_infinite] ${mode === 'predictive' ? 'bg-blue-500' : 'bg-purple-500'}`} />}
              </div>
              
              {/* Model Box */}
