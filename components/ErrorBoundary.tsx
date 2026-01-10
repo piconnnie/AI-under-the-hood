@@ -23,6 +23,10 @@ class ErrorBoundary extends React.Component<Props, State> {
     console.error("Uncaught error:", error, errorInfo);
   }
 
+  handleRetry = () => {
+    this.setState({ hasError: false, error: null });
+  };
+
   render(): ReactNode {
     if (this.state.hasError) {
       return (
@@ -34,7 +38,7 @@ class ErrorBoundary extends React.Component<Props, State> {
           </p>
           <button
             className="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-slate-800 transition-colors"
-            onClick={() => this.setState({ hasError: false, error: null })}
+            onClick={this.handleRetry}
           >
             Try Again
           </button>

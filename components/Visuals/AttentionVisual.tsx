@@ -14,22 +14,56 @@ const AttentionVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) =>
   
   const words = scenario === 'tired' ? wordsTired : wordsWide;
   const itIndex = 7; // Index of 'it'
+  const adjectiveIndex = 10; // Index of 'tired'/'wide'
+  const animalIndex = 1;
+  const streetIndex = 5;
 
-  // Attention scores for "it" (index 7)
+  // Attention scores
   const getAttention = (targetIdx: number, sourceIdx: number) => {
-      // We only care about attention FROM "it" (source=7) TO other words
-      if (sourceIdx !== itIndex) return 0.1; // Default low attention for visual noise
+      // Base noise
+      let score = 0.05;
 
-      if (scenario === 'tired') {
-          if (targetIdx === 1) return 0.9; // animal (high)
-          if (targetIdx === 5) return 0.2; // street (low)
-          if (targetIdx === 10) return 0.6; // tired (context)
-      } else {
-          if (targetIdx === 1) return 0.2; // animal (low)
-          if (targetIdx === 5) return 0.9; // street (high)
-          if (targetIdx === 10) return 0.6; // wide (context)
+      // Logic: Define strong connections based on scenario
+      
+      // 1. Hovering "it" (Index 7)
+      if (sourceIdx === itIndex) {
+          if (targetIdx === adjectiveIndex) score = 0.6; // Connects to adjective context
+          
+          if (scenario === 'tired') {
+              if (targetIdx === animalIndex) score = 0.95; // Strong connection
+              if (targetIdx === streetIndex) score = 0.15; // Weak connection
+          } else {
+              if (targetIdx === streetIndex) score = 0.95; // Strong connection
+              if (targetIdx === animalIndex) score = 0.15; // Weak connection
+          }
       }
-      return 0.1; // Base attention
+      
+      // 2. Hovering the Adjective "tired" or "wide" (Index 10)
+      else if (sourceIdx === adjectiveIndex) {
+          if (targetIdx === itIndex) score = 0.7; // Relates back to "it"
+          
+          if (scenario === 'tired') {
+              if (targetIdx === animalIndex) score = 0.8; // "Tired" describes "Animal"
+              if (targetIdx === streetIndex) score = 0.1;
+          } else {
+              if (targetIdx === streetIndex) score = 0.8; // "Wide" describes "Street"
+              if (targetIdx === animalIndex) score = 0.1;
+          }
+      }
+
+      // 3. Hovering Antecedents (Animal/Street)
+      else if (sourceIdx === animalIndex) {
+          // Animal connects to "it" strongly if "tired"
+          if (targetIdx === itIndex) score = scenario === 'tired' ? 0.9 : 0.2;
+          if (targetIdx === adjectiveIndex && scenario === 'tired') score = 0.5;
+      }
+      else if (sourceIdx === streetIndex) {
+          // Street connects to "it" strongly if "wide"
+          if (targetIdx === itIndex) score = scenario === 'wide' ? 0.9 : 0.2;
+          if (targetIdx === adjectiveIndex && scenario === 'wide') score = 0.5;
+      }
+
+      return score;
   };
 
   return (
@@ -68,8 +102,6 @@ const AttentionVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) =>
                   if (attention < 0.2) return null; // Don't draw weak lines to reduce clutter
 
                   // Calculate rough positions (Assuming uniform distribution for simplicity in this demo)
-                  // In a real app, we'd use refs to get exact element coordinates.
-                  // Visual HACK: approximate % positions based on word count
                   const startX = (hoveredWordIndex / words.length) * 100 + 4 + '%'; // +4 for centering
                   const endX = (i / words.length) * 100 + 4 + '%';
                   
@@ -88,7 +120,7 @@ const AttentionVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) =>
                         />
                         {/* Score Label */}
                         {attention > 0.5 && (
-                            <text x={endX} y={130} textAnchor="middle" className="fill-white text-[10px] font-bold">
+                            <text x={endX} y={130} textAnchor="middle" className="fill-white text-[10px] font-bold animate-enter">
                                 {Math.round(attention * 100)}%
                             </text>
                         )}
@@ -101,6 +133,11 @@ const AttentionVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) =>
           <div className="relative z-10 flex justify-between w-full px-4">
               {words.map((word, i) => {
                   const isIt = i === itIndex;
+                  const isAdj = i === adjectiveIndex;
+                  const isAnimal = i === animalIndex;
+                  const isStreet = i === streetIndex;
+                  const isKeyWord = isIt || isAdj || isAnimal || isStreet;
+
                   const isHovered = i === hoveredWordIndex;
                   const isRelated = hoveredWordIndex !== null && getAttention(i, hoveredWordIndex) > 0.5;
 
@@ -112,17 +149,17 @@ const AttentionVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) =>
                         className={`relative cursor-pointer transition-all duration-300 px-2 py-1 rounded-lg
                             ${isHovered ? 'bg-indigo-600 -translate-y-1 shadow-lg shadow-indigo-500/50 scale-110' : ''}
                             ${isRelated ? 'bg-slate-700 text-indigo-300' : ''}
-                            ${isIt && !isHovered ? 'border border-indigo-500/50 text-indigo-400' : ''}
+                            ${isKeyWord && !isHovered ? 'border border-indigo-500/30 text-indigo-400' : ''}
                         `}
                       >
                           <span className={`text-xs sm:text-sm font-bold ${isHovered ? 'text-white' : 'text-slate-400'}`}>
                               {word}
                           </span>
                           
-                          {/* "It" indicator */}
-                          {isIt && !isHovered && (
-                              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-black text-indigo-500 uppercase tracking-widest animate-bounce">
-                                  Hover Me
+                          {/* "Hover Me" indicator for key words */}
+                          {isKeyWord && !isHovered && hoveredWordIndex === null && (
+                              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-black text-indigo-500 uppercase tracking-widest animate-bounce whitespace-nowrap opacity-50">
+                                  Hover
                               </div>
                           )}
                       </div>
