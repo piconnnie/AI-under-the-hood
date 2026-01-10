@@ -29,16 +29,19 @@ const CopilotAutopilotVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimatin
       
       {/* Slider Control */}
       <div className="mb-8">
-          <div className="flex justify-between text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 px-1">
+          <label htmlFor="autonomy-slider" className="flex justify-between text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3 px-1">
               <span>Manual</span>
               <span>Copilot</span>
               <span>Autopilot</span>
               <span>Agent</span>
-          </div>
+          </label>
           <input 
+            id="autonomy-slider"
             type="range" 
             min="0" max="3" step="1"
             value={autonomyLevel} 
+            aria-label="Set Autonomy Level"
+            aria-valuetext={current.label}
             onChange={(e) => setAutonomyLevel(parseInt(e.target.value))}
             className="w-full h-4 bg-slate-200 rounded-full appearance-none cursor-pointer accent-indigo-600 transition-all hover:bg-slate-300"
           />
@@ -49,7 +52,7 @@ const CopilotAutopilotVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimatin
           
           {/* Left: Role Card */}
           <div className="w-full sm:w-1/3 bg-white border-2 border-slate-100 p-6 rounded-2xl flex flex-col justify-center items-center text-center shadow-sm">
-              <div className="text-6xl mb-4 animate-[bounce_2s_infinite]">{current.icon}</div>
+              <div className="text-6xl mb-4 animate-[bounce_2s_infinite]" aria-hidden="true">{current.icon}</div>
               <h3 className="text-2xl font-black text-slate-800 mb-1">{current.label}</h3>
               <div className="inline-block bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
                   Your Role: {current.role}
@@ -62,7 +65,7 @@ const CopilotAutopilotVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimatin
           {/* Right: Interaction Simulator */}
           <div className="flex-1 bg-slate-900 rounded-2xl p-6 relative overflow-hidden flex flex-col shadow-2xl border border-slate-800">
               <div className="absolute top-0 left-0 w-full bg-slate-800 p-2 flex items-center gap-2 border-b border-slate-700">
-                  <div className="flex gap-1.5 ml-1">
+                  <div className="flex gap-1.5 ml-1" aria-hidden="true">
                       <div className="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
                       <div className="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
                       <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
@@ -71,7 +74,7 @@ const CopilotAutopilotVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimatin
               </div>
 
               {/* Screen Content based on Level */}
-              <div className="flex-1 pt-8 font-mono text-sm text-slate-300">
+              <div className="flex-1 pt-8 font-mono text-sm text-slate-300" aria-live="polite">
                   {autonomyLevel === 0 && (
                       <div className="animate-enter">
                           <span className="text-white">User typing:</span> {EMAIL_CONTENT}<span className="animate-pulse">|</span>
@@ -110,7 +113,7 @@ const CopilotAutopilotVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimatin
                       <div className="space-y-2 animate-enter">
                           {AGENT_LOGS.map((log, i) => (
                               <div key={i} className="flex items-center gap-2" style={{ animation: `fadeIn 0.5s ease-out ${i * 0.5}s forwards`, opacity: 0 }}>
-                                  <span className="text-emerald-500">➜</span>
+                                  <span className="text-emerald-500" aria-hidden="true">➜</span>
                                   <span>{log}</span>
                               </div>
                           ))}

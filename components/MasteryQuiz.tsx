@@ -58,12 +58,17 @@ const MasteryQuiz: React.FC<MasteryQuizProps> = ({ onClose }) => {
 
   if (showResults) {
     return (
-      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-enter">
+      <div 
+        className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-enter"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quiz-results-title"
+      >
         <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden relative">
           <div className="bg-indigo-600 p-8 text-center relative overflow-hidden">
             <div className="relative z-10">
-                <div className="text-6xl mb-4 animate-bounce">{badge.emoji}</div>
-                <h2 className="text-2xl font-bold text-white mb-1">{badge.title}</h2>
+                <div className="text-6xl mb-4 animate-bounce" aria-hidden="true">{badge.emoji}</div>
+                <h2 id="quiz-results-title" className="text-2xl font-bold text-white mb-1">{badge.title}</h2>
                 <p className="text-indigo-200 font-bold uppercase tracking-widest text-xs">Final Score: {score} / {MASTERY_QUIZ.length} ({percentage}%)</p>
             </div>
           </div>
@@ -74,14 +79,18 @@ const MasteryQuiz: React.FC<MasteryQuizProps> = ({ onClose }) => {
                 <p className="text-sm text-slate-500">Copy the text below to post on LinkedIn or Twitter.</p>
             </div>
 
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm text-slate-600 font-mono relative group cursor-pointer hover:border-indigo-300 transition-colors" onClick={handleShare}>
+            <button 
+                className="w-full bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm text-slate-600 font-mono relative group cursor-pointer hover:border-indigo-300 transition-colors text-left" 
+                onClick={handleShare}
+                aria-label="Copy result text to clipboard"
+            >
                 <p>I just completed the “AI Product Manager – How Models Learn” quiz 🚀</p>
                 <p className="mt-2">Score: {score}/{MASTERY_QUIZ.length} ({percentage}%)</p>
                 <p>Badge: {badge.title} {badge.emoji}</p>
                 <div className="absolute inset-0 bg-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
                     <span className="bg-white shadow-sm px-3 py-1 rounded-full text-xs font-bold text-indigo-600">Click to Copy</span>
                 </div>
-            </div>
+            </button>
 
             <div className="flex gap-3">
                 <button 
@@ -104,21 +113,26 @@ const MasteryQuiz: React.FC<MasteryQuizProps> = ({ onClose }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-enter">
+    <div 
+        className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-enter"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mastery-quiz-title"
+    >
       <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="bg-white px-8 py-6 border-b border-slate-200 flex justify-between items-center">
             <div>
-                <h2 className="text-xl font-bold text-slate-900">Mastery Quiz</h2>
+                <h2 id="mastery-quiz-title" className="text-xl font-bold text-slate-900">Mastery Quiz</h2>
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">{currentQuestion.section}</p>
             </div>
-            <button onClick={onClose} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center transition-colors">
-                <i className="fa-solid fa-xmark"></i>
+            <button onClick={onClose} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center transition-colors" aria-label="Close quiz">
+                <i className="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
         </div>
 
         {/* Progress */}
-        <div className="h-1 w-full bg-slate-100">
+        <div className="h-1 w-full bg-slate-100" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} aria-label="Quiz progress">
             <div className="h-full bg-indigo-600 transition-all duration-500" style={{ width: `${progress}%` }} />
         </div>
 
@@ -128,10 +142,12 @@ const MasteryQuiz: React.FC<MasteryQuizProps> = ({ onClose }) => {
                 {currentQuestion.question}
             </h3>
 
-            <div className="space-y-3">
+            <div className="space-y-3" role="radiogroup" aria-label="Question options">
                 {currentQuestion.options.map((option, idx) => (
                     <button
                         key={idx}
+                        role="radio"
+                        aria-checked={selectedOption === idx}
                         disabled={isAnswered}
                         onClick={() => handleOptionClick(idx)}
                         className={`w-full p-4 rounded-xl text-left text-sm font-medium transition-all border relative overflow-hidden ${
@@ -145,7 +161,7 @@ const MasteryQuiz: React.FC<MasteryQuizProps> = ({ onClose }) => {
                         <div className="flex justify-between items-center">
                             <span>{option.text}</span>
                             {isAnswered && (
-                                <span>{option.isCorrect ? <i className="fa-solid fa-check"></i> : (selectedOption === idx ? <i className="fa-solid fa-xmark"></i> : '')}</span>
+                                <span>{option.isCorrect ? <i className="fa-solid fa-check" aria-hidden="true"></i> : (selectedOption === idx ? <i className="fa-solid fa-xmark" aria-hidden="true"></i> : '')}</span>
                             )}
                         </div>
                     </button>
@@ -153,9 +169,9 @@ const MasteryQuiz: React.FC<MasteryQuizProps> = ({ onClose }) => {
             </div>
 
             {isAnswered && (
-                <div className="mt-6 p-5 bg-indigo-50 rounded-xl border border-indigo-100 animate-enter">
+                <div className="mt-6 p-5 bg-indigo-50 rounded-xl border border-indigo-100 animate-enter" role="alert">
                     <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg">💡</span>
+                        <span className="text-lg" aria-hidden="true">💡</span>
                         <span className="text-xs font-bold text-indigo-800 uppercase tracking-widest">Why this matters</span>
                     </div>
                     <p className="text-sm text-indigo-900 leading-relaxed">

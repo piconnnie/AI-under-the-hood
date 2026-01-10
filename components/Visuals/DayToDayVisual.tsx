@@ -134,10 +134,12 @@ const DayToDayVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => 
               <div className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">The AI PM Toolbox</div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white">Day-to-Day Workflows</h3>
           </div>
-          <div className="hidden sm:flex gap-2">
+          <div className="hidden sm:flex gap-2" role="tablist" aria-label="Workflow Categories">
              {(Object.keys(TOOLBOX) as Category[]).map(cat => (
                  <button 
                     key={cat}
+                    role="tab"
+                    aria-selected={activeCategory === cat}
                     onClick={() => setActiveCategory(cat)}
                     className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeCategory === cat ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
                  >
@@ -151,10 +153,12 @@ const DayToDayVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => 
           
           {/* LEFT: Prompt Selector */}
           <div className="w-full md:w-1/3 bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-4 overflow-y-auto custom-scrollbar">
-              <div className="sm:hidden flex gap-2 overflow-x-auto mb-4 pb-2">
+              <div className="sm:hidden flex gap-2 overflow-x-auto mb-4 pb-2" role="tablist">
                  {(Object.keys(TOOLBOX) as Category[]).map(cat => (
                      <button 
                         key={cat}
+                        role="tab"
+                        aria-selected={activeCategory === cat}
                         onClick={() => setActiveCategory(cat)}
                         className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${activeCategory === cat ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500'}`}
                      >
@@ -163,15 +167,17 @@ const DayToDayVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => 
                  ))}
               </div>
               
-              <div className="space-y-3">
+              <div className="space-y-3" role="listbox" aria-label="Prompt Templates">
                   {TOOLBOX[activeCategory].map((p, i) => (
                       <button 
                         key={i}
+                        role="option"
+                        aria-selected={selectedPrompt.title === p.title}
                         onClick={() => { setSelectedPrompt(p); setSimulatedOutput(""); setIsTyping(false); }}
                         className={`w-full p-4 rounded-xl text-left border-2 transition-all group ${selectedPrompt.title === p.title ? 'bg-white dark:bg-slate-800 border-indigo-500 shadow-md' : 'bg-white dark:bg-slate-800 border-transparent hover:border-indigo-200 dark:hover:border-indigo-800'}`}
                       >
                           <div className="flex items-center gap-3">
-                              <span className="text-2xl group-hover:scale-110 transition-transform">{p.icon}</span>
+                              <span className="text-2xl group-hover:scale-110 transition-transform" aria-hidden="true">{p.icon}</span>
                               <div>
                                   <div className={`font-bold text-sm ${selectedPrompt.title === p.title ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-700 dark:text-slate-200'}`}>{p.title}</div>
                                   <div className="text-[10px] text-slate-400 font-medium mt-0.5">Click to load template</div>
@@ -188,12 +194,12 @@ const DayToDayVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => 
               {/* Prompt Box */}
               <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-4 mb-4 flex-1 flex flex-col">
                   <div className="flex justify-between items-center mb-2">
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Input Prompt Template</span>
-                      <button onClick={copyToClipboard} className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 flex items-center gap-1 active:scale-95 transition-transform">
-                          <i className="fa-regular fa-copy"></i> Copy
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest" id="prompt-template-label">Input Prompt Template</span>
+                      <button onClick={copyToClipboard} className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 flex items-center gap-1 active:scale-95 transition-transform" aria-label="Copy prompt to clipboard">
+                          <i className="fa-regular fa-copy" aria-hidden="true"></i> Copy
                       </button>
                   </div>
-                  <div className="flex-1 bg-slate-50 dark:bg-slate-950 rounded-xl p-4 font-mono text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap overflow-y-auto border border-slate-100 dark:border-slate-800">
+                  <div className="flex-1 bg-slate-50 dark:bg-slate-950 rounded-xl p-4 font-mono text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap overflow-y-auto border border-slate-100 dark:border-slate-800" aria-labelledby="prompt-template-label">
                       {selectedPrompt.template}
                   </div>
               </div>
@@ -205,20 +211,20 @@ const DayToDayVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => 
                     disabled={isTyping}
                     className="flex items-center gap-2 px-6 py-3 bg-slate-900 dark:bg-indigo-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                      {isTyping ? <i className="fa-solid fa-spinner animate-spin"></i> : <i className="fa-solid fa-wand-magic-sparkles"></i>}
+                      {isTyping ? <i className="fa-solid fa-spinner animate-spin" aria-hidden="true"></i> : <i className="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>}
                       <span>Generate Output</span>
                   </button>
               </div>
 
               {/* Output Box */}
-              <div className="bg-indigo-50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-900/30 p-4 h-40 flex flex-col relative overflow-hidden">
+              <div className="bg-indigo-50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-900/30 p-4 h-40 flex flex-col relative overflow-hidden" aria-live="polite">
                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">AI Response Preview</span>
                    <div className="font-mono text-xs sm:text-sm text-indigo-900 dark:text-indigo-200 leading-relaxed whitespace-pre-wrap">
                        {simulatedOutput}
-                       {isTyping && <span className="inline-block w-2 h-4 bg-indigo-500 align-middle ml-1 animate-pulse"/>}
+                       {isTyping && <span className="inline-block w-2 h-4 bg-indigo-500 align-middle ml-1 animate-pulse" aria-hidden="true"/>}
                    </div>
                    {!simulatedOutput && !isTyping && (
-                       <div className="absolute inset-0 flex items-center justify-center text-indigo-300/50 text-4xl pointer-events-none">
+                       <div className="absolute inset-0 flex items-center justify-center text-indigo-300/50 text-4xl pointer-events-none" aria-hidden="true">
                            🤖
                        </div>
                    )}

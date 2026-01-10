@@ -155,10 +155,6 @@ const App: React.FC = () => {
 
   const scrollToRef = (ref: React.RefObject<HTMLDivElement | null>) => {
     if (ref.current && mainContentRef.current) {
-        // Simple offset calculation handling container scroll
-        // The container is relative, so we use offsetTop
-        // Note: This assumes the ref is inside the scrollable container
-        // We might need to account for the sticky header in mobile if not handled by CSS
         ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
@@ -236,6 +232,12 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-slate-50 dark:bg-slate-950 overflow-hidden font-sans text-slate-500 dark:text-slate-400 transition-colors duration-300">
+      
+      {/* Skip Link for Accessibility */}
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-[100] px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg shadow-lg">
+        Skip to content
+      </a>
+
       {/* Quiz Overlay */}
       {showMasteryQuiz && <MasteryQuiz onClose={() => setShowMasteryQuiz(false)} />}
 
@@ -247,7 +249,7 @@ const App: React.FC = () => {
         <div className="p-6 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex justify-between items-center">
             <div>
                 <div className="flex items-center gap-3 mb-1">
-                    <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-lg shadow-md">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-lg shadow-md" aria-hidden="true">
                         <i className="fa-solid fa-brain"></i>
                     </div>
                     <h1 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">AI Hood</h1>
@@ -257,20 +259,20 @@ const App: React.FC = () => {
             <button 
                 onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}
                 className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                aria-label="Toggle Theme"
+                aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
             >
-                <i className={`fa-solid ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`}></i>
+                <i className={`fa-solid ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`} aria-hidden="true"></i>
             </button>
         </div>
         
         <div className="p-4">
             <button onClick={() => setShowMasteryQuiz(true)} className="w-full py-3 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:shadow-md transition-all font-bold text-xs flex items-center justify-center gap-2 group">
-                <i className="fa-solid fa-trophy text-amber-500"></i>
+                <i className="fa-solid fa-trophy text-amber-500" aria-hidden="true"></i>
                 <span>Mastery Quiz</span>
             </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar">
+        <nav className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar" aria-label="Course Curriculum">
             {CURRICULUM.map((level) => (
               <div key={level.id} className="mb-6">
                  <h3 className="px-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2">
@@ -283,9 +285,10 @@ const App: React.FC = () => {
                       <button
                         key={lesson.id}
                         onClick={() => handleLessonSelect(level.id, lesson.id)}
+                        aria-current={isActive ? 'page' : undefined}
                         className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-all duration-200 ${isActive ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-semibold shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'}`}
                       >
-                        <i className={`fa-solid fa-circle text-[6px] ${isActive ? 'text-indigo-500' : 'text-slate-300 dark:text-slate-600'}`}></i>
+                        <i className={`fa-solid fa-circle text-[6px] ${isActive ? 'text-indigo-500' : 'text-slate-300 dark:text-slate-600'}`} aria-hidden="true"></i>
                         <span className="truncate">{lesson.title}</span>
                       </button>
                     );
@@ -297,7 +300,7 @@ const App: React.FC = () => {
         
         <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
              <button onClick={() => setShowMentorship(true)} className="w-full py-3 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-md transition-all font-bold text-xs flex items-center justify-center gap-2">
-                <i className="fa-solid fa-rocket"></i> Get Mentorship
+                <i className="fa-solid fa-rocket" aria-hidden="true"></i> Get Mentorship
             </button>
             <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
@@ -315,8 +318,12 @@ const App: React.FC = () => {
         {/* Mobile Header */}
         <header className="lg:hidden flex-shrink-0 h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 flex items-center justify-between z-30 sticky top-0">
             <div className="flex items-center gap-3">
-                <button onClick={() => setSidebarOpen(true)} className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg">
-                    <i className="fa-solid fa-bars text-lg"></i>
+                <button 
+                    onClick={() => setSidebarOpen(true)} 
+                    className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg"
+                    aria-label="Open sidebar"
+                >
+                    <i className="fa-solid fa-bars text-lg" aria-hidden="true"></i>
                 </button>
                 <span className="font-bold text-slate-900 dark:text-white">AI Under the Hood</span>
             </div>
@@ -324,8 +331,9 @@ const App: React.FC = () => {
                 <button 
                     onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}
                     className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg"
+                    aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
                 >
-                    <i className={`fa-solid ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`}></i>
+                    <i className={`fa-solid ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`} aria-hidden="true"></i>
                 </button>
                 <div className="text-xs font-bold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-full">
                     {Math.round(((currentIndex + 1) / allLessons.length) * 100)}%
@@ -334,11 +342,11 @@ const App: React.FC = () => {
         </header>
 
         {/* Scrollable Content Area */}
-        <div id="main-content" ref={mainContentRef} className="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar scroll-smooth relative">
+        <main id="main-content" ref={mainContentRef} className="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar scroll-smooth relative" tabIndex={-1}>
           <div className="max-w-5xl mx-auto pb-32 space-y-8">
             
             {/* Page Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-2 mb-2">
                         <span className="px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold uppercase tracking-wider rounded">Level {currentLevel.id}</span>
@@ -348,39 +356,49 @@ const App: React.FC = () => {
                     <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm sm:text-base">{currentLesson.subtitle}</p>
                 </div>
                 
-                <div className="flex gap-2">
-                    <button onClick={goToPrevLesson} disabled={currentIndex === 0} className="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 disabled:opacity-50 transition-all shadow-sm">
-                        <i className="fa-solid fa-arrow-left"></i>
+                <nav className="flex gap-2" aria-label="Lesson navigation">
+                    <button 
+                        onClick={goToPrevLesson} 
+                        disabled={currentIndex === 0} 
+                        aria-label="Previous lesson"
+                        className="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 disabled:opacity-50 transition-all shadow-sm"
+                    >
+                        <i className="fa-solid fa-arrow-left" aria-hidden="true"></i>
                     </button>
-                    <button onClick={goToNextLesson} disabled={currentIndex === allLessons.length - 1} className="h-10 px-6 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 shadow-md hover:shadow-lg disabled:opacity-50 transition-all flex items-center gap-2">
+                    <button 
+                        onClick={goToNextLesson} 
+                        disabled={currentIndex === allLessons.length - 1} 
+                        className="h-10 px-6 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 shadow-md hover:shadow-lg disabled:opacity-50 transition-all flex items-center gap-2"
+                    >
                         <span>Next</span>
-                        <i className="fa-solid fa-arrow-right"></i>
+                        <i className="fa-solid fa-arrow-right" aria-hidden="true"></i>
                     </button>
-                </div>
-            </div>
+                </nav>
+            </header>
 
             {/* Main Visual Card */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8 transition-colors">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <i className="fa-solid fa-eye text-indigo-500"></i> Interactive Simulation
+                        <i className="fa-solid fa-eye text-indigo-500" aria-hidden="true"></i> Interactive Simulation
                     </h2>
                     {currentLesson.visualType === 'interactive' && (
                        <button 
                            onClick={toggleSimulation} 
+                           aria-pressed={isAnimating}
                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all border ${
                                isAnimating 
                                ? 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-900' 
                                : 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900'
                            }`}
                        >
-                         <i className={`fa-solid ${isAnimating ? 'fa-stop' : 'fa-play'}`}></i>
+                         <i className={`fa-solid ${isAnimating ? 'fa-stop' : 'fa-play'}`} aria-hidden="true"></i>
                          <span>{isAnimating ? 'Stop' : 'Run Simulation'}</span>
                        </button>
                     )}
                 </div>
 
-                <div className="rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50">
+                <div className="rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50" role="img" aria-label={`Interactive visualization for ${currentLesson.title}`}>
                     <ErrorBoundary>
                       {renderVisual()}
                     </ErrorBoundary>
@@ -400,20 +418,24 @@ const App: React.FC = () => {
                 <div ref={extrasRef} className="flex flex-wrap gap-4 mb-2 animate-enter scroll-mt-20">
                     <button 
                         onClick={() => setShowEli5(!showEli5)}
+                        aria-expanded={showEli5}
+                        aria-controls="eli5-content"
                         className={`flex-1 py-4 px-6 rounded-2xl border-2 font-bold text-sm flex items-center justify-center gap-3 transition-all ${showEli5 ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 shadow-inner' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:border-amber-300 dark:hover:border-amber-700 hover:text-amber-600 dark:hover:text-amber-400 shadow-sm hover:shadow-md'}`}
                     >
-                        <i className="fa-solid fa-child-reaching text-lg"></i>
+                        <i className="fa-solid fa-child-reaching text-lg" aria-hidden="true"></i>
                         <span>Simple Explanation (ELI5)</span>
-                        <i className={`fa-solid fa-chevron-down transition-transform ${showEli5 ? 'rotate-180' : ''}`}></i>
+                        <i className={`fa-solid fa-chevron-down transition-transform ${showEli5 ? 'rotate-180' : ''}`} aria-hidden="true"></i>
                     </button>
 
                     <button 
                         onClick={() => setShowAnalogy(!showAnalogy)}
+                        aria-expanded={showAnalogy}
+                        aria-controls="analogy-content"
                         className={`flex-1 py-4 px-6 rounded-2xl border-2 font-bold text-sm flex items-center justify-center gap-3 transition-all ${showAnalogy ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-400 shadow-inner' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:border-purple-300 dark:hover:border-purple-700 hover:text-purple-600 dark:hover:text-purple-400 shadow-sm hover:shadow-md'}`}
                     >
-                        <i className="fa-solid fa-lightbulb text-lg"></i>
+                        <i className="fa-solid fa-lightbulb text-lg" aria-hidden="true"></i>
                         <span>Real World Analogy</span>
-                        <i className={`fa-solid fa-chevron-down transition-transform ${showAnalogy ? 'rotate-180' : ''}`}></i>
+                        <i className={`fa-solid fa-chevron-down transition-transform ${showAnalogy ? 'rotate-180' : ''}`} aria-hidden="true"></i>
                     </button>
                 </div>
             )}
@@ -422,13 +444,13 @@ const App: React.FC = () => {
             {(showEli5 || showAnalogy) && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 animate-enter">
                     {showEli5 && (
-                        <div className="bg-amber-50/50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-amber-900/30 p-6 shadow-sm">
+                        <div id="eli5-content" className="bg-amber-50/50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-amber-900/30 p-6 shadow-sm">
                             <h4 className="text-xs font-black text-amber-400 dark:text-amber-500 uppercase tracking-widest mb-3">Explain Like I'm 5</h4>
                             <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">"{currentLesson.eli5}"</p>
                         </div>
                     )}
                     {showAnalogy && (
-                        <div className="bg-purple-50/50 dark:bg-purple-900/10 rounded-2xl border border-purple-100 dark:border-purple-900/30 p-6 shadow-sm">
+                        <div id="analogy-content" className="bg-purple-50/50 dark:bg-purple-900/10 rounded-2xl border border-purple-100 dark:border-purple-900/30 p-6 shadow-sm">
                             <h4 className="text-xs font-black text-purple-400 dark:text-purple-500 uppercase tracking-widest mb-3">Analogy: {currentLesson.analogy.title}</h4>
                             <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">{currentLesson.analogy.description}</p>
                         </div>
@@ -441,13 +463,13 @@ const App: React.FC = () => {
                  {/* Quiz Card */}
                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 flex flex-col h-full hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-md transition-all">
                       <div className="flex items-center gap-2 mb-6">
-                         <span className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-sm"><i className="fa-solid fa-clipboard-question"></i></span>
+                         <span className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-sm" aria-hidden="true"><i className="fa-solid fa-clipboard-question"></i></span>
                          <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Quick Check</h4>
                       </div>
                       
                       <p className="text-base font-bold text-slate-900 dark:text-white mb-6">{currentLesson.quiz.question}</p>
                       
-                      <div className="space-y-3 flex-1">
+                      <div className="space-y-3 flex-1" role="radiogroup" aria-label="Quiz options">
                         {currentLesson.quiz.options.map((option, idx) => {
                             const isSelected = selectedOptionIndex === idx;
                             const isCorrect = option.isCorrect;
@@ -461,16 +483,23 @@ const App: React.FC = () => {
                             }
 
                             return (
-                                <button key={idx} onClick={() => handleQuizSubmit(idx)} disabled={quizAnswered !== null} className={`w-full p-4 rounded-xl text-sm text-left font-medium border transition-all flex justify-between items-center ${btnClass}`}>
+                                <button 
+                                    key={idx} 
+                                    role="radio"
+                                    aria-checked={isSelected}
+                                    disabled={quizAnswered !== null}
+                                    onClick={() => handleQuizSubmit(idx)} 
+                                    className={`w-full p-4 rounded-xl text-sm text-left font-medium border transition-all flex justify-between items-center ${btnClass}`}
+                                >
                                     <span>{option.text}</span>
-                                    {isSelected && <i className={`fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}`}></i>}
+                                    {isSelected && <i className={`fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}`} aria-hidden="true"></i>}
                                 </button>
                             );
                         })}
                       </div>
 
                       {quizAnswered !== null && (
-                        <div className="mt-6 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-100 dark:border-indigo-800 animate-enter">
+                        <div className="mt-6 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-100 dark:border-indigo-800 animate-enter" role="alert">
                           <p className="text-[10px] font-bold text-indigo-400 uppercase mb-1">Insight</p>
                           <p className="text-xs text-indigo-900 dark:text-indigo-200 font-medium leading-relaxed">{currentLesson.quiz.explanation}</p>
                         </div>
@@ -481,7 +510,7 @@ const App: React.FC = () => {
 
             {/* Takeaway */}
             <div className="bg-indigo-600 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-8 opacity-10 text-9xl transform translate-x-10 -translate-y-10">
+                <div className="absolute top-0 right-0 p-8 opacity-10 text-9xl transform translate-x-10 -translate-y-10" aria-hidden="true">
                     <i className="fa-solid fa-quote-right"></i>
                 </div>
                 <p className="text-[10px] font-bold text-indigo-200 uppercase tracking-widest mb-3 relative z-10">Key Takeaway</p>
@@ -501,14 +530,14 @@ const App: React.FC = () => {
                             <div className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{nextLesson.title}</div>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                            <i className="fa-solid fa-arrow-right"></i>
+                            <i className="fa-solid fa-arrow-right" aria-hidden="true"></i>
                         </div>
                     </button>
                 </div>
             )}
             
           </div>
-        </div>
+        </main>
       </div>
       
       {/* Scroll To Top Button (Hidden on mobile if conflicting) */}
@@ -517,7 +546,7 @@ const App: React.FC = () => {
         className={`fixed bottom-24 right-8 lg:bottom-8 lg:right-8 w-12 h-12 bg-indigo-600 text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-300 z-50 hover:bg-indigo-700 hover:scale-110 ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}`}
         aria-label="Scroll to top"
       >
-        <i className="fa-solid fa-arrow-up"></i>
+        <i className="fa-solid fa-arrow-up" aria-hidden="true"></i>
       </button>
 
       {/* Floating Nav Bar - Less Intrusive Version */}
@@ -526,23 +555,26 @@ const App: React.FC = () => {
             <button 
                 onClick={() => handleFloatingNav('concepts')}
                 className="px-3 py-1.5 rounded-full text-[10px] font-bold text-white dark:text-slate-900 hover:bg-white/10 dark:hover:bg-slate-200/50 transition-colors flex items-center gap-1.5"
+                aria-label="Scroll to Concepts"
             >
-                <i className="fa-solid fa-layer-group"></i>
+                <i className="fa-solid fa-layer-group" aria-hidden="true"></i>
                 <span>Concepts</span>
             </button>
-            <div className="w-px h-3 bg-white/20 dark:bg-slate-900/20"></div>
+            <div className="w-px h-3 bg-white/20 dark:bg-slate-900/20" aria-hidden="true"></div>
             <button 
                 onClick={() => handleFloatingNav('eli5')}
                 className={`px-3 py-1.5 rounded-full text-[10px] font-bold transition-colors flex items-center gap-1.5 ${showEli5 ? 'bg-indigo-500 text-white' : 'text-white dark:text-slate-900 hover:bg-white/10 dark:hover:bg-slate-200/50'}`}
+                aria-label="Scroll to Simple Explanation"
             >
-                <i className="fa-solid fa-child-reaching"></i>
+                <i className="fa-solid fa-child-reaching" aria-hidden="true"></i>
                 <span>ELI5</span>
             </button>
             <button 
                 onClick={() => handleFloatingNav('analogy')}
                 className={`px-3 py-1.5 rounded-full text-[10px] font-bold transition-colors flex items-center gap-1.5 ${showAnalogy ? 'bg-purple-500 text-white' : 'text-white dark:text-slate-900 hover:bg-white/10 dark:hover:bg-slate-200/50'}`}
+                aria-label="Scroll to Analogy"
             >
-                <i className="fa-solid fa-lightbulb"></i>
+                <i className="fa-solid fa-lightbulb" aria-hidden="true"></i>
                 <span>Analogy</span>
             </button>
         </div>
@@ -550,28 +582,36 @@ const App: React.FC = () => {
 
       {/* Mentorship Modal */}
       {showMentorship && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-enter" onClick={() => setShowMentorship(false)}>
+        <div 
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-enter" 
+            onClick={() => setShowMentorship(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mentorship-title"
+        >
             <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800" onClick={e => e.stopPropagation()}>
                 <div className="bg-slate-50 dark:bg-slate-800 p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">Career Mentorship</h2>
-                    <button onClick={() => setShowMentorship(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i className="fa-solid fa-xmark"></i></button>
+                    <h2 id="mentorship-title" className="text-lg font-bold text-slate-900 dark:text-white">Career Mentorship</h2>
+                    <button onClick={() => setShowMentorship(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" aria-label="Close modal">
+                        <i className="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
                 </div>
                 <div className="p-6 space-y-4">
                     <div className="text-center mb-6">
                         <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center text-3xl mx-auto mb-3">
-                            <i className="fa-solid fa-user-astronaut"></i>
+                            <i className="fa-solid fa-user-astronaut" aria-hidden="true"></i>
                         </div>
                         <p className="text-sm text-slate-600 dark:text-slate-300">Need tailored, personalized mentorship or career guidance? Reach out to Faraz using the methods below.</p>
                     </div>
                     <a href="mailto:fraz.iimi@gmail.com" className="flex items-center gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all group">
-                        <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400 flex items-center justify-center group-hover:text-indigo-600 dark:group-hover:text-indigo-400"><i className="fa-solid fa-envelope"></i></div>
+                        <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400 flex items-center justify-center group-hover:text-indigo-600 dark:group-hover:text-indigo-400"><i className="fa-solid fa-envelope" aria-hidden="true"></i></div>
                         <div>
                             <div className="text-xs font-bold text-slate-400 uppercase">Email</div>
                             <div className="text-sm font-bold text-slate-900 dark:text-white">fraz.iimi@gmail.com</div>
                         </div>
                     </a>
                     <a href="https://www.linkedin.com/in/alifraz" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group">
-                        <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400 flex items-center justify-center group-hover:text-blue-600 dark:group-hover:text-blue-400"><i className="fa-brands fa-linkedin"></i></div>
+                        <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400 flex items-center justify-center group-hover:text-blue-600 dark:group-hover:text-blue-400"><i className="fa-brands fa-linkedin" aria-hidden="true"></i></div>
                         <div>
                             <div className="text-xs font-bold text-slate-400 uppercase">LinkedIn</div>
                             <div className="text-sm font-bold text-slate-900 dark:text-white">Connect Profile</div>
