@@ -35,32 +35,6 @@ export const CURRICULUM: Level[] = [
         }
       },
       {
-        id: "ai-landscape",
-        title: "Predictive vs. Generative",
-        subtitle: "The Two Buckets of AI",
-        shortDescription: [
-          "Predictive AI: Classifies data or predicts numbers (Fraud, Recommendations).",
-          "Generative AI: Creates new content (Text, Images, Code).",
-          "AI is probabilistic (it guesses), not deterministic (like logic)."
-        ],
-        eli5: "Predictive AI is like a calculator that guesses the next number. Generative AI is like an artist who paints a new picture based on what they've seen before.",
-        analogy: {
-          title: "The Chef vs. The Critic",
-          description: "Generative AI is a Chef creating new dishes. Predictive AI is a Critic tasting a dish and telling you if it's 'Spicy' or 'Sweet'."
-        },
-        visualType: 'diagram',
-        animationPrompt: "Two distinct paths: Data->Label and Prompt->Content",
-        takeaway: "Know the difference: Are you classifying existing data or creating new data?",
-        quiz: {
-          question: "A feature detects if an uploaded ID card is fake. What type of AI is this?",
-          options: [
-            { text: "Generative AI", isCorrect: false },
-            { text: "Predictive AI (Classification)", isCorrect: true }
-          ],
-          explanation: "It's analyzing a pattern to assign a label (Fake/Real), not creating new content."
-        }
-      },
-      {
         id: "intro",
         title: "Rules vs. Learning",
         subtitle: "Why we need Machine Learning",
@@ -85,6 +59,58 @@ export const CURRICULUM: Level[] = [
             { text: "When the problem is complex", isCorrect: false }
           ],
           explanation: "ML is probabilistic and expensive. If precise logic works, use it."
+        }
+      },
+      {
+        id: "supervised-unsupervised",
+        title: "Supervised vs. Unsupervised",
+        subtitle: "Do we have the answers?",
+        shortDescription: [
+          "Supervised: Training with labeled data (Question + Answer).",
+          "Unsupervised: Training with raw data (Just Questions).",
+          "Supervised is for prediction; Unsupervised is for discovery."
+        ],
+        eli5: "Supervised learning is like a teacher grading your homework—you know what you got right or wrong. Unsupervised learning is like learning a language by just listening to people speak—you figure out patterns on your own.",
+        analogy: {
+          title: "The Classroom",
+          description: "Supervised: A test with an answer key. Unsupervised: Grouping students by height without knowing their names."
+        },
+        visualType: 'diagram',
+        animationPrompt: "Sorting colored balls vs sorting shapes",
+        takeaway: "Supervised Learning requires expensive labeling. Unsupervised is cheaper but harder to control.",
+        quiz: {
+          question: "You want to group customers by purchasing behavior, but you don't have predefined groups. Which approach?",
+          options: [
+            { text: "Supervised Learning", isCorrect: false },
+            { text: "Unsupervised Learning (Clustering)", isCorrect: true }
+          ],
+          explanation: "You don't have the 'labels' (answers) yet, you just want to find natural patterns."
+        }
+      },
+      {
+        id: "ai-landscape",
+        title: "Predictive vs. Generative",
+        subtitle: "The Two Buckets of AI",
+        shortDescription: [
+          "Predictive AI: Classifies data or predicts numbers (Fraud, Recommendations).",
+          "Generative AI: Creates new content (Text, Images, Code).",
+          "AI is probabilistic (it guesses), not deterministic (like logic)."
+        ],
+        eli5: "Predictive AI is like a calculator that guesses the next number. Generative AI is like an artist who paints a new picture based on what they've seen before.",
+        analogy: {
+          title: "The Chef vs. The Critic",
+          description: "Generative AI is a Chef creating new dishes. Predictive AI is a Critic tasting a dish and telling you if it's 'Spicy' or 'Sweet'."
+        },
+        visualType: 'diagram',
+        animationPrompt: "Two distinct paths: Data->Label and Prompt->Content",
+        takeaway: "Know the difference: Are you classifying existing data or creating new data?",
+        quiz: {
+          question: "A feature detects if an uploaded ID card is fake. What type of AI is this?",
+          options: [
+            { text: "Generative AI", isCorrect: false },
+            { text: "Predictive AI (Classification)", isCorrect: true }
+          ],
+          explanation: "It's analyzing a pattern to assign a label (Fake/Real), not creating new content."
         }
       },
       {
@@ -701,6 +727,32 @@ export const CURRICULUM: Level[] = [
             { text: "To help computers understand relationships between concepts", isCorrect: true }
           ],
           explanation: "It translates human meaning into machine numbers."
+        }
+      },
+      {
+        id: "attention-mechanism",
+        title: "Attention Mechanism",
+        subtitle: "The 'T' in GPT",
+        shortDescription: [
+          "Allows the model to focus on relevant words, regardless of distance.",
+          "Before Attention, AI forgot the start of long sentences.",
+          "It calculates relationships: 'Bank' relates to 'Money', not 'River' here."
+        ],
+        eli5: "When you read a long sentence, you don't give every word equal importance. If I say 'The big red dog...', you focus on 'dog'. Attention lets the AI focus on the keywords that matter.",
+        analogy: {
+          title: "The Spotlight",
+          description: "In a dark room (a sentence), the AI shines a spotlight (Attention) only on the objects (words) relevant to the current task."
+        },
+        visualType: 'diagram',
+        animationPrompt: "Lines connecting related words in a sentence",
+        takeaway: "Transformers (Attention) enabled modern GenAI by understanding context.",
+        quiz: {
+          question: "What problem did Attention solve?",
+          options: [
+            { text: "It made computers faster", isCorrect: false },
+            { text: "It allowed models to understand long-range context", isCorrect: true }
+          ],
+          explanation: "Old models (RNNs) forgot the beginning of the paragraph. Attention remembers everything relevant."
         }
       },
       {

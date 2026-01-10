@@ -6,6 +6,73 @@ const Diagrams: React.FC<{ id: string }> = ({ id }) => {
   const containerClass = "w-full h-72 flex items-center justify-center bg-slate-50/50 dark:bg-slate-950/50 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors";
 
   switch (id) {
+    case 'supervised-unsupervised':
+        return (
+            <div className={containerClass}>
+                <svg viewBox="0 0 400 240" className="w-full h-full p-4">
+                    {/* Supervised Side */}
+                    <g transform="translate(20, 20)">
+                        <rect width="170" height="200" rx="10" className="fill-white dark:fill-slate-900 stroke-slate-200 dark:stroke-slate-700" />
+                        <text x="85" y="30" textAnchor="middle" className="text-[10px] font-black uppercase fill-slate-500">Supervised Learning</text>
+                        
+                        {/* Data + Labels */}
+                        <g transform="translate(40, 60)">
+                            <rect width="90" height="20" rx="4" fill="#eff6ff" stroke="#bfdbfe" />
+                            <text x="45" y="14" textAnchor="middle" className="text-[8px] font-bold fill-blue-600">Image of Cat</text>
+                            <text x="110" y="14" className="text-xl">🏷️</text>
+                        </g>
+                        <g transform="translate(40, 90)">
+                            <rect width="90" height="20" rx="4" fill="#eff6ff" stroke="#bfdbfe" />
+                            <text x="45" y="14" textAnchor="middle" className="text-[8px] font-bold fill-blue-600">Image of Dog</text>
+                            <text x="110" y="14" className="text-xl">🏷️</text>
+                        </g>
+                        
+                        <text x="85" y="160" textAnchor="middle" className="text-[9px] font-medium fill-slate-400 italic">Teacher provides Labels</text>
+                    </g>
+
+                    {/* Unsupervised Side */}
+                    <g transform="translate(210, 20)">
+                        <rect width="170" height="200" rx="10" className="fill-white dark:fill-slate-900 stroke-slate-200 dark:stroke-slate-700" />
+                        <text x="85" y="30" textAnchor="middle" className="text-[10px] font-black uppercase fill-slate-500">Unsupervised Learning</text>
+                        
+                        {/* Clustered Data */}
+                        <circle cx="50" cy="80" r="5" fill="#f43f5e" />
+                        <circle cx="60" cy="70" r="5" fill="#f43f5e" />
+                        <circle cx="45" cy="65" r="5" fill="#f43f5e" />
+                        
+                        <circle cx="120" cy="120" r="5" fill="#10b981" />
+                        <circle cx="130" cy="110" r="5" fill="#10b981" />
+                        <circle cx="115" cy="105" r="5" fill="#10b981" />
+
+                        <text x="85" y="160" textAnchor="middle" className="text-[9px] font-medium fill-slate-400 italic">Finding patterns on its own</text>
+                    </g>
+                </svg>
+            </div>
+        );
+    case 'attention-mechanism':
+        return (
+            <div className={containerClass}>
+                <svg viewBox="0 0 400 240" className="w-full h-full p-4">
+                    <text x="200" y="30" textAnchor="middle" className="text-[12px] font-black fill-slate-700 dark:fill-slate-300 uppercase tracking-widest">Self-Attention</text>
+                    
+                    {/* Sentence */}
+                    <g transform="translate(50, 150)">
+                        <text x="0" y="0" className="text-sm font-mono font-bold fill-slate-400">The</text>
+                        <text x="40" y="0" className="text-sm font-mono font-bold fill-slate-800 dark:fill-white">animal</text>
+                        <text x="100" y="0" className="text-sm font-mono font-bold fill-slate-400">didn't</text>
+                        <text x="160" y="0" className="text-sm font-mono font-bold fill-slate-400">cross</text>
+                        <text x="220" y="0" className="text-sm font-mono font-bold fill-slate-400">because</text>
+                        <text x="290" y="0" className="text-sm font-mono font-bold fill-indigo-600 dark:fill-indigo-400">it</text>
+                    </g>
+
+                    {/* Attention Arcs */}
+                    <path d="M 110 135 Q 200 60 345 135" fill="none" stroke="#6366f1" strokeWidth="2" strokeDasharray="4" />
+                    <text x="220" y="80" textAnchor="middle" className="text-[10px] font-bold fill-indigo-500 bg-white dark:bg-slate-900">"it" refers to "animal"</text>
+                    
+                    <text x="200" y="200" textAnchor="middle" className="text-[10px] font-medium fill-slate-500">The model learns relationships between words regardless of distance.</text>
+                </svg>
+            </div>
+        );
     case 'ai-landscape':
       return (
         <div className={containerClass}>

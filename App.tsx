@@ -45,6 +45,8 @@ import FeatureEngineeringVisual from './components/Visuals/FeatureEngineeringVis
 import CopilotAutopilotVisual from './components/Visuals/CopilotAutopilotVisual';
 import ResourcesVisual from './components/Visuals/ResourcesVisual';
 import DayToDayVisual from './components/Visuals/DayToDayVisual';
+import SupervisedUnsupervisedVisual from './components/Visuals/SupervisedUnsupervisedVisual';
+import AttentionVisual from './components/Visuals/AttentionVisual';
 import MasteryQuiz from './components/MasteryQuiz';
 import { ConceptExplainer } from './components/ConceptExplainer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -186,6 +188,7 @@ const App: React.FC = () => {
       case 'ai-hierarchy': return <AIVsMLVisual isAnimating={isAnimating} />;
       case 'ai-landscape': return <PredictiveGenVisual isAnimating={isAnimating} />;
       case 'intro': return <FoundationVisual isAnimating={isAnimating} />;
+      case 'supervised-unsupervised': return <SupervisedUnsupervisedVisual isAnimating={isAnimating} />;
       case 'value-matrix': return <Diagrams id="value-matrix" />;
       case 'train-test': return <TrainTestVisual isAnimating={isAnimating} />;
       case 'eda': return <EDAVisual isAnimating={isAnimating} />;
@@ -215,6 +218,7 @@ const App: React.FC = () => {
       case 'hierarchical-clustering': return <HierarchicalClusteringVisual isAnimating={isAnimating} />;
       case 'tokenization': return <TokenizationVisual isAnimating={isAnimating} />;
       case 'embeddings': return <EmbeddingsVisual isAnimating={isAnimating} />;
+      case 'attention-mechanism': return <AttentionVisual isAnimating={isAnimating} />;
       case 'vector-db': return <VectorDBVisual isAnimating={isAnimating} />;
       case 'llms': return <LLMVisual isAnimating={isAnimating} />;
       case 'llm-rag': return <RAGVisual isAnimating={isAnimating} />;

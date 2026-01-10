@@ -13,13 +13,17 @@ const EXPLANATIONS: Record<string, ExplainerItem[]> = {
     { icon: '🧅', title: 'Nested Layers', desc: 'AI is the broad field. ML is the subset that learns from data. DL is the specialized subset using neural nets.' },
     { icon: '🎯', title: 'Specificity', desc: 'As you move inward (to DL), models become more complex, powerful, and data-hungry.' }
   ],
-  'ai-landscape': [
-    { icon: '📸', title: 'Discriminator (Predictive)', desc: 'Acts like a critic. It sorts inputs into existing buckets (e.g., "Cat" vs "Dog").' },
-    { icon: '🎨', title: 'Generator (Generative)', desc: 'Acts like an artist. It learns the distribution of data to create new samples from noise.' }
-  ],
   'intro': [
     { icon: '📜', title: 'Traditional Code', desc: 'You explicitly write every rule (IF-THEN). Good for logic, bad for perception.' },
     { icon: '🧠', title: 'Machine Learning', desc: 'The system infers rules from examples. You provide the goal, it figures out the "how".' }
+  ],
+  'supervised-unsupervised': [
+    { icon: '🏷️', title: 'Supervised Learning', desc: 'You give the AI the question AND the answer. "This photo is a Cat". It learns to predict labels.' },
+    { icon: '🧩', title: 'Unsupervised Learning', desc: 'You give only data, no answers. "Here are 1,000 photos, group them". It finds patterns.' }
+  ],
+  'ai-landscape': [
+    { icon: '📸', title: 'Discriminator (Predictive)', desc: 'Acts like a critic. It sorts inputs into existing buckets (e.g., "Cat" vs "Dog").' },
+    { icon: '🎨', title: 'Generator (Generative)', desc: 'Acts like an artist. It learns the distribution of data to create new samples from noise.' }
   ],
   'value-matrix': [
     { icon: '💎', title: 'High Value', desc: 'Problems where AI solves a pain point that code cannot (e.g., Vision, NLP).' },
@@ -120,6 +124,10 @@ const EXPLANATIONS: Record<string, ExplainerItem[]> = {
   'embeddings': [
     { icon: '🌌', title: 'Vector Space', desc: 'A multi-dimensional map where words with similar meanings are located physically close together.' },
     { icon: '🧭', title: 'Semantic Distance', desc: 'Math used to calculate meaning. "King" - "Man" + "Woman" ≈ "Queen".' }
+  ],
+  'attention-mechanism': [
+    { icon: '🔦', title: 'Self-Attention', desc: 'The mechanism that allows models to weigh the importance of different words in a sentence relative to each other.' },
+    { icon: '🕸️', title: 'Context Window', desc: 'The amount of text the model can "look at" at once to maintain coherence.' }
   ],
   'vector-db': [
     { icon: '🗄️', title: 'Vector Storage', desc: 'A database optimized to store and search through millions of embeddings.' },
