@@ -44,6 +44,7 @@ import EthicsVisual from './components/Visuals/EthicsVisual';
 import FeatureEngineeringVisual from './components/Visuals/FeatureEngineeringVisual';
 import CopilotAutopilotVisual from './components/Visuals/CopilotAutopilotVisual';
 import ResourcesVisual from './components/Visuals/ResourcesVisual';
+import DayToDayVisual from './components/Visuals/DayToDayVisual';
 import MasteryQuiz from './components/MasteryQuiz';
 import { ConceptExplainer } from './components/ConceptExplainer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -228,6 +229,7 @@ const App: React.FC = () => {
       case 'xai-trust': return <XAIVisual isAnimating={isAnimating} />;
       case 'capstone-simulation': return <CapstoneVisual isAnimating={isAnimating} />;
       case 'learning-resources': return <ResourcesVisual isAnimating={isAnimating} />;
+      case 'day-to-day-pm': return <DayToDayVisual isAnimating={isAnimating} />;
       default: return <Diagrams id={currentLesson.id} />;
     }
   };
@@ -385,7 +387,7 @@ const App: React.FC = () => {
                 </div>
 
                 {/* Concept Explainer */}
-                {currentLesson.id !== 'capstone-simulation' && currentLesson.id !== 'learning-resources' && (
+                {currentLesson.id !== 'capstone-simulation' && currentLesson.id !== 'learning-resources' && currentLesson.id !== 'day-to-day-pm' && (
                     <div ref={conceptsRef} className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800 scroll-mt-20">
                         <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">Key Concepts</h3>
                         <ConceptExplainer lessonId={currentLesson.id} />
@@ -394,7 +396,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Action Buttons Row (Simplistic UI) */}
-            {currentLesson.id !== 'capstone-simulation' && currentLesson.id !== 'learning-resources' && (
+            {currentLesson.id !== 'capstone-simulation' && currentLesson.id !== 'learning-resources' && currentLesson.id !== 'day-to-day-pm' && (
                 <div ref={extrasRef} className="flex flex-wrap gap-4 mb-2 animate-enter scroll-mt-20">
                     <button 
                         onClick={() => setShowEli5(!showEli5)}
@@ -434,7 +436,7 @@ const App: React.FC = () => {
                 </div>
             )}
 
-            {currentLesson.id !== 'capstone-simulation' && currentLesson.id !== 'learning-resources' && (
+            {currentLesson.id !== 'capstone-simulation' && currentLesson.id !== 'learning-resources' && currentLesson.id !== 'day-to-day-pm' && (
               <div className="grid grid-cols-1 gap-6">
                  {/* Quiz Card */}
                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 flex flex-col h-full hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-md transition-all">
@@ -519,7 +521,7 @@ const App: React.FC = () => {
       </button>
 
       {/* Floating Nav Bar - Less Intrusive Version */}
-      {currentLesson.id !== 'capstone-simulation' && currentLesson.id !== 'learning-resources' && (
+      {currentLesson.id !== 'capstone-simulation' && currentLesson.id !== 'learning-resources' && currentLesson.id !== 'day-to-day-pm' && (
         <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40 flex items-center gap-1 bg-slate-900/80 dark:bg-white/90 backdrop-blur-md p-1 rounded-full shadow-lg border border-slate-700/30 dark:border-slate-200/50 transition-all hover:scale-105 hover:bg-slate-900 dark:hover:bg-white animate-enter">
             <button 
                 onClick={() => handleFloatingNav('concepts')}

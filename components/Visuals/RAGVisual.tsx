@@ -1,106 +1,294 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
+
+// Simplified Knowledge Base
+const DOCUMENTS = [
+  { 
+    id: 'doc1', 
+    title: 'Refund Policy', 
+    content: 'Refunds are processed within 3-5 business days to original method.', 
+    color: 'bg-rose-500',
+    borderColor: 'border-rose-400',
+    textColor: 'text-rose-100'
+  },
+  { 
+    id: 'doc2', 
+    title: 'Technical Support', 
+    content: 'Restart the device. If issue persists, hold power button for 10s.', 
+    color: 'bg-indigo-500',
+    borderColor: 'border-indigo-400',
+    textColor: 'text-indigo-100'
+  },
+  { 
+    id: 'doc3', 
+    title: 'Pricing Tiers', 
+    content: 'Basic: $10/mo, Pro: $25/mo, Enterprise: Contact Sales.', 
+    color: 'bg-emerald-500',
+    borderColor: 'border-emerald-400',
+    textColor: 'text-emerald-100'
+  }
+];
+
+const QUERIES = [
+  { text: "How much is the Pro plan?", matchId: 'doc3', response: "The Pro plan costs $25 per month." },
+  { text: "My screen is frozen.", matchId: 'doc2', response: "Try holding the power button for 10 seconds to force a restart." },
+  { text: "When will I get my money back?", matchId: 'doc1', response: "Refunds typically take 3-5 business days." }
+];
+
+type Step = 'idle' | 'vectorizing' | 'searching' | 'augmenting' | 'generating';
 
 const RAGVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
-  const [step, setStep] = useState(0);
-
-  const nextStep = () => setStep(s => (s + 1) % 5);
+  const [messages, setMessages] = useState<{role: 'user'|'bot', text: string}[]>([]);
+  const [step, setStep] = useState<Step>('idle');
+  const [activeQuery, setActiveQuery] = useState<typeof QUERIES[0] | null>(null);
+  const [highlightedDoc, setHighlightedDoc] = useState<string | null>(null);
+  const [contextContent, setContextContent] = useState<string | null>(null);
+  
+  const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!isAnimating) {
-        setStep(0);
-        return;
+    if (chatRef.current) {
+      chatRef.current.scrollTo({ top: chatRef.current.scrollHeight, behavior: 'smooth' });
     }
-    const interval = setInterval(() => {
-        setStep(s => (s + 1) % 5);
-    }, 1500);
-    return () => clearInterval(interval);
-  }, [isAnimating]);
+  }, [messages]);
 
-  const steps = [
-    { label: "User asks Question", icon: "👤" },
-    { label: "Convert to Vector", icon: "🔢" },
-    { label: "Retrieve Context", icon: "📚" },
-    { label: "Augment Prompt", icon: "➕" },
-    { label: "LLM Generates Answer", icon: "🤖" }
-  ];
+  // Auto-run simulation loop if isAnimating is true
+  useEffect(() => {
+      if (isAnimating && step === 'idle') {
+          const timer = setTimeout(() => {
+              const randomQ = QUERIES[Math.floor(Math.random() * QUERIES.length)];
+              handleQuery(randomQ);
+          }, 1500);
+          return () => clearTimeout(timer);
+      }
+  }, [isAnimating, step]);
+
+  const handleQuery = (q: typeof QUERIES[0]) => {
+    if (step !== 'idle') return;
+    
+    setActiveQuery(q);
+    setMessages(prev => [...prev, { role: 'user', text: q.text }]);
+    setStep('vectorizing');
+    setHighlightedDoc(null);
+    setContextContent(null);
+
+    // Sequence
+    setTimeout(() => {
+        setStep('searching');
+        setTimeout(() => {
+            setHighlightedDoc(q.matchId);
+            setTimeout(() => {
+                setStep('augmenting');
+                const doc = DOCUMENTS.find(d => d.id === q.matchId);
+                setTimeout(() => {
+                    setContextContent(doc?.content || "");
+                    setStep('generating');
+                    setTimeout(() => {
+                        setMessages(prev => [...prev, { role: 'bot', text: q.response }]);
+                        setStep('idle');
+                        setActiveQuery(null);
+                    }, 1500);
+                }, 1000);
+            }, 1000);
+        }, 1500);
+    }, 1500);
+  };
 
   return (
-    <div className="relative w-full h-80 bg-slate-900 rounded-[2.5rem] overflow-hidden border-4 border-slate-800 flex flex-col p-8 shadow-2xl">
-        {/* Progress Bar */}
-        <div className="flex justify-between mb-8 relative z-10">
-            {steps.map((s, i) => (
-                <div key={i} className="flex flex-col items-center gap-2 w-1/5">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs transition-all duration-500 border-2 ${step >= i ? 'bg-orange-500 border-orange-400 text-white scale-110' : 'bg-slate-800 border-slate-700 text-slate-500'}`}>
-                        {step > i ? '✓' : i + 1}
-                    </div>
-                    <span className={`text-[8px] font-black uppercase text-center transition-colors duration-500 ${step === i ? 'text-orange-400' : 'text-slate-600'}`}>{s.label}</span>
-                </div>
-            ))}
-            {/* Connecting Line */}
-            <div className="absolute top-4 left-0 w-full h-0.5 bg-slate-800 -z-10" />
-            <div 
-                className="absolute top-4 left-0 h-0.5 bg-orange-500 -z-10 transition-all duration-500 ease-out" 
-                style={{ width: `${step * 25}%` }} 
-            />
+    <div className="w-full h-[40rem] bg-slate-900 rounded-[2.5rem] overflow-hidden border-4 border-slate-800 flex flex-col shadow-2xl relative">
+      
+      {/* --- TOP: RAG ENGINE --- */}
+      <div className="flex-1 p-6 relative overflow-hidden flex flex-col">
+        {/* Background Grid */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none" 
+             style={{ backgroundImage: 'radial-gradient(#6366f1 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+        
+        <div className="flex justify-between items-start mb-4 z-10">
+             <div className="flex items-center gap-2">
+                 <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></div>
+                 <span className="text-[10px] font-black uppercase tracking-widest text-indigo-300">RAG Engine Visualization</span>
+             </div>
+             <div className="bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+                 <span className="text-[10px] font-bold text-slate-400 uppercase">
+                    {step === 'idle' && "Waiting for Query"}
+                    {step === 'vectorizing' && "Step 1: Convert Text to Vector"}
+                    {step === 'searching' && "Step 2: Similarity Search (Vector DB)"}
+                    {step === 'augmenting' && "Step 3: Augment Prompt Context"}
+                    {step === 'generating' && "Step 4: LLM Generation"}
+                 </span>
+             </div>
         </div>
 
-        {/* Dynamic Visualization Area */}
-        <div className="flex-1 bg-slate-800/50 rounded-2xl border border-slate-700/50 flex items-center justify-center relative overflow-hidden">
-            {/* Step 0: User */}
-            <div className={`absolute transition-all duration-500 ${step === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-                <div className="bg-white text-slate-900 px-6 py-3 rounded-tr-2xl rounded-bl-2xl rounded-br-2xl font-bold shadow-lg">
-                    "What is our refund policy?"
-                </div>
-            </div>
-
-            {/* Step 1: Vector */}
-            <div className={`absolute transition-all duration-500 flex flex-col items-center ${step === 1 ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-                <div className="font-mono text-emerald-400 text-xs bg-slate-900 p-2 rounded border border-emerald-500/30">
-                    [0.12, -0.45, 0.88, ...]
-                </div>
-                <div className="text-[10px] text-slate-400 mt-2 font-black uppercase">Embedding</div>
-            </div>
-
-            {/* Step 2: Database */}
-            <div className={`absolute transition-all duration-500 ${step === 2 ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-                <div className="grid grid-cols-2 gap-2">
-                    <div className="w-16 h-20 bg-slate-700 rounded border border-slate-600" />
-                    <div className="w-16 h-20 bg-orange-500/20 border-2 border-orange-500 rounded flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(249,115,22,0.3)]">
-                        📄
+        <div className="flex-1 flex gap-4 relative z-10">
+            {/* LEFT: Vector DB */}
+            <div className="w-1/3 flex flex-col gap-2 relative">
+                <span className="text-[9px] font-black uppercase text-slate-500 text-center">Vector Database</span>
+                {DOCUMENTS.map(doc => (
+                    <div 
+                        key={doc.id}
+                        className={`p-3 rounded-xl border-2 transition-all duration-500 relative overflow-hidden ${
+                            highlightedDoc === doc.id 
+                            ? `${doc.borderColor} bg-slate-800 scale-105 shadow-[0_0_20px_rgba(255,255,255,0.1)]` 
+                            : 'border-slate-800 bg-slate-800/50 opacity-60'
+                        }`}
+                    >
+                        <div className="flex justify-between items-center mb-1">
+                            <span className={`text-[10px] font-bold uppercase ${highlightedDoc === doc.id ? 'text-white' : 'text-slate-500'}`}>{doc.title}</span>
+                            {/* Vector Representation */}
+                            <div className="flex gap-0.5">
+                                {[1,2,3,4].map(i => <div key={i} className={`w-1 h-3 rounded-full ${doc.color} opacity-80`} />)}
+                            </div>
+                        </div>
+                        <div className="text-[8px] text-slate-400 truncate">{doc.content}</div>
+                        
+                        {/* Search Scanner Effect */}
+                        {step === 'searching' && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-[shimmer_1s_infinite]" />
+                        )}
                     </div>
-                    <div className="w-16 h-20 bg-slate-700 rounded border border-slate-600" />
-                    <div className="w-16 h-20 bg-slate-700 rounded border border-slate-600" />
-                </div>
+                ))}
             </div>
 
-            {/* Step 3: Augment */}
-            <div className={`absolute transition-all duration-500 ${step === 3 ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-                <div className="bg-slate-900 border border-slate-600 p-4 rounded-xl w-64 text-[10px] text-slate-300 font-mono relative">
-                    <span className="text-slate-500">System: Answer using this context.</span><br/>
-                    <span className="text-orange-400">Context: Refunds are processed within 14 days via...</span><br/>
-                    <span className="text-white">User: What is our refund policy?</span>
-                </div>
-            </div>
-
-            {/* Step 4: Answer */}
-            <div className={`absolute transition-all duration-500 ${step === 4 ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-                <div className="flex gap-4 items-end">
-                    <div className="text-4xl">🤖</div>
-                    <div className="bg-indigo-600 text-white px-6 py-4 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl font-medium shadow-xl">
-                        Based on your policy, refunds take 14 days.
+            {/* MIDDLE: Process Visualization */}
+            <div className="w-1/3 flex flex-col items-center justify-center relative">
+                
+                {/* 1. Query Vector Flying */}
+                <div 
+                    className={`absolute transition-all duration-1000 ease-in-out flex flex-col items-center gap-2
+                    ${step === 'vectorizing' ? 'opacity-100 scale-100 top-1/2' : ''}
+                    ${step === 'searching' ? 'opacity-100 top-10 scale-75' : ''}
+                    ${['idle', 'augmenting', 'generating'].includes(step) ? 'opacity-0 scale-50' : ''}
+                    `}
+                >
+                    <div className="bg-white text-slate-900 px-3 py-1 rounded-full text-[10px] font-bold shadow-lg whitespace-nowrap mb-2 max-w-[120px] truncate">
+                        {activeQuery?.text}
                     </div>
+                    <div className="text-xl">⬇️</div>
+                    <div className="flex gap-1 p-2 bg-slate-800 rounded-lg border border-slate-600">
+                        {[1,2,3,4,5].map(i => (
+                            <div key={i} className="w-1.5 h-6 rounded-full bg-indigo-500 animate-pulse" style={{ animationDelay: `${i*0.1}s` }} />
+                        ))}
+                    </div>
+                    <span className="text-[8px] font-bold text-indigo-400 uppercase bg-slate-900/80 px-2 rounded">Vector Embedding</span>
+                </div>
+
+                {/* 2. Document Flying to Context */}
+                {step === 'augmenting' && highlightedDoc && (
+                    <div className="absolute top-10 left-0 w-full h-full flex items-center justify-center z-20">
+                         <div className={`p-4 rounded-xl bg-emerald-500 text-white shadow-2xl animate-[flyToContext_1s_ease-in-out_forwards] flex items-center gap-3`}>
+                            <span className="text-xl">📄</span>
+                            <div>
+                                <div className="text-[10px] font-black uppercase">Relevant Context Found</div>
+                                <div className="text-xs font-medium">Injecting into LLM...</div>
+                            </div>
+                         </div>
+                    </div>
+                )}
+
+                {/* Arrow Flow Lines */}
+                {step === 'searching' && (
+                   <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                       <path d="M 50 150 Q 100 150 100 50" stroke="#6366f1" strokeWidth="2" strokeDasharray="4" fill="none" className="animate-[dash_1s_linear_infinite]" />
+                   </svg>
+                )}
+            </div>
+
+            {/* RIGHT: LLM Context Window */}
+            <div className="w-1/3 flex flex-col gap-2 relative">
+                <span className="text-[9px] font-black uppercase text-slate-500 text-center">LLM Prompt Window</span>
+                <div className={`flex-1 bg-slate-800 border-2 ${step === 'generating' ? 'border-indigo-500 shadow-[0_0_20px_rgba(99,102,241,0.2)]' : 'border-slate-700'} rounded-xl p-3 flex flex-col gap-2 transition-all duration-300`}>
+                    
+                    {/* System Prompt */}
+                    <div className="bg-slate-900/50 p-2 rounded border border-slate-600 opacity-60">
+                        <span className="text-[8px] font-black text-slate-500 block">SYSTEM</span>
+                        <div className="h-1 w-2/3 bg-slate-600 rounded"></div>
+                    </div>
+
+                    {/* Injected Context Slot */}
+                    <div className={`p-2 rounded border border-dashed transition-all duration-500 ${contextContent ? 'bg-emerald-900/30 border-emerald-500/50' : 'bg-slate-900/30 border-slate-700'}`}>
+                        <span className="text-[8px] font-black text-slate-500 block mb-1">RETRIEVED CONTEXT</span>
+                        {contextContent ? (
+                            <div className="text-[9px] text-emerald-300 font-mono leading-tight animate-[fadeIn_0.5s_ease-out]">
+                                "{contextContent}"
+                            </div>
+                        ) : (
+                            <div className="text-[8px] text-slate-600 italic">Waiting for search...</div>
+                        )}
+                    </div>
+
+                    {/* User Prompt */}
+                    <div className="bg-slate-900/50 p-2 rounded border border-slate-600 mt-auto">
+                        <span className="text-[8px] font-black text-slate-500 block mb-1">USER</span>
+                        <div className="text-[9px] text-slate-300 truncate">{activeQuery?.text || "..."}</div>
+                    </div>
+
                 </div>
             </div>
         </div>
+      </div>
 
-        {!isAnimating && (
-            <button 
-                onClick={nextStep}
-                className="absolute bottom-6 right-6 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs font-bold transition-colors z-20"
-            >
-                Step &gt;
-            </button>
-        )}
+      {/* --- BOTTOM: CHAT INTERFACE --- */}
+      <div className="h-48 bg-white flex flex-col">
+          {/* Message Area */}
+          <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 scroll-smooth">
+              {messages.length === 0 && (
+                  <div className="text-center text-slate-400 text-xs mt-4">
+                      Select a query below to start the RAG process.
+                  </div>
+              )}
+              {messages.map((m, i) => (
+                  <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-[80%] px-4 py-2 rounded-xl text-sm ${
+                          m.role === 'user' 
+                          ? 'bg-indigo-600 text-white rounded-br-none' 
+                          : 'bg-white border border-slate-200 text-slate-700 rounded-bl-none shadow-sm'
+                      }`}>
+                          {m.text}
+                      </div>
+                  </div>
+              ))}
+              {step === 'generating' && (
+                  <div className="flex justify-start">
+                      <div className="bg-white border border-slate-200 px-4 py-3 rounded-xl rounded-bl-none shadow-sm flex gap-1 items-center">
+                          <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></div>
+                          <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-75"></div>
+                          <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-150"></div>
+                      </div>
+                  </div>
+              )}
+          </div>
+
+          {/* Input Area */}
+          <div className="p-3 bg-white border-t border-slate-200">
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                  {QUERIES.map((q, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleQuery(q)}
+                        disabled={step !== 'idle'}
+                        className="flex-shrink-0 px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-full text-xs font-bold text-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                      >
+                          {q.text}
+                      </button>
+                  ))}
+              </div>
+          </div>
+      </div>
+
+      <style>{`
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -20; }
+        }
+        @keyframes flyToContext {
+            0% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+            50% { transform: translate(50%, -20%) scale(0.8); opacity: 0.8; }
+            100% { transform: translate(150px, 0) scale(0); opacity: 0; }
+        }
+      `}</style>
     </div>
   );
 };

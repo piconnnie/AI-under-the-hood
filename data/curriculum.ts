@@ -986,5 +986,38 @@ export const CURRICULUM: Level[] = [
         }
       }
     ]
+  },
+  {
+    id: 11,
+    title: "The AI PM Toolbox",
+    unlocked: true,
+    lessons: [
+      {
+        id: "day-to-day-pm",
+        title: "Day-to-Day AI",
+        subtitle: "Practical Prompts & Use Cases",
+        shortDescription: [
+          "Stop analyzing AI, start using it.",
+          "Prompts for Strategy, Discovery, PRDs, and GTM.",
+          "Copy-paste templates to accelerate your workflow."
+        ],
+        eli5: "This is your cheat sheet. Instead of writing everything from scratch, use these magic spells (prompts) to get 80% of the work done instantly.",
+        analogy: {
+          title: "The Exoskeleton",
+          description: "AI doesn't replace you; it's a robotic suit that makes you lift heavier strategy and write faster docs."
+        },
+        visualType: 'interactive',
+        animationPrompt: "Prompt Library Interface",
+        takeaway: "The best PMs use AI as a 'Thought Partner' to unblock creativity and speed up execution.",
+        quiz: {
+          question: "When using AI for a PRD, what should you verify?",
+          options: [
+            { text: "Nothing, it's always right", isCorrect: false },
+            { text: "Everything, specifically specific logic and edge cases", isCorrect: true }
+          ],
+          explanation: "AI is great at structure but bad at context. Always human-review the output."
+        }
+      }
+    ]
   }
 ];
