@@ -47,6 +47,7 @@ import ResourcesVisual from './components/Visuals/ResourcesVisual';
 import DayToDayVisual from './components/Visuals/DayToDayVisual';
 import SupervisedUnsupervisedVisual from './components/Visuals/SupervisedUnsupervisedVisual';
 import AttentionVisual from './components/Visuals/AttentionVisual';
+import RICEVisual from './components/Visuals/RICEVisual';
 import MasteryQuiz from './components/MasteryQuiz';
 import { ConceptExplainer } from './components/ConceptExplainer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -61,6 +62,7 @@ const App: React.FC = () => {
   const [showMasteryQuiz, setShowMasteryQuiz] = useState(false);
   const [showMentorship, setShowMentorship] = useState(false);
   const [visitorCount, setVisitorCount] = useState(428);
+  const [searchQuery, setSearchQuery] = useState('');
   
   // Theme state
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -102,6 +104,20 @@ const App: React.FC = () => {
       level.lessons.map(lesson => ({ ...lesson, levelId: level.id }))
     );
   }, []);
+
+  // Filter curriculum based on search query
+  const filteredCurriculum = useMemo(() => {
+    if (!searchQuery.trim()) return CURRICULUM;
+    const query = searchQuery.toLowerCase();
+    return CURRICULUM.map(level => ({
+      ...level,
+      lessons: level.lessons.filter(lesson => 
+        lesson.title.toLowerCase().includes(query) || 
+        lesson.subtitle.toLowerCase().includes(query) ||
+        lesson.shortDescription.some(d => d.toLowerCase().includes(query))
+      )
+    })).filter(level => level.lessons.length > 0);
+  }, [searchQuery]);
 
   const currentIndex = allLessons.findIndex(l => l.id === currentLessonId);
   const currentLevel = CURRICULUM.find(l => l.id === currentLevelId) || CURRICULUM[0];
@@ -193,7 +209,7 @@ const App: React.FC = () => {
       case 'train-test': return <TrainTestVisual isAnimating={isAnimating} />;
       case 'eda': return <EDAVisual isAnimating={isAnimating} />;
       case 'feature-engineering': return <FeatureEngineeringVisual isAnimating={isAnimating} />;
-      case 'rice-ai': return <Diagrams id="rice-ai" />;
+      case 'rice-ai': return <RICEVisual isAnimating={isAnimating} />;
       case 'linear-reg': return <LinearRegression isAnimating={isAnimating} />;
       case 'binary-class': return <BinaryClassification isAnimating={isAnimating} />;
       case 'logistic-reg': return <LogisticRegressionVisual isAnimating={isAnimating} />;
@@ -269,7 +285,22 @@ const App: React.FC = () => {
             </button>
         </div>
         
-        <div className="p-4">
+        <div className="px-4 pt-4 pb-2 space-y-3">
+            {/* Search */}
+            <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i className="fa-solid fa-magnifying-glass text-slate-400 group-focus-within:text-indigo-500 transition-colors text-xs"></i>
+                </div>
+                <input 
+                    type="text" 
+                    className="block w-full pl-9 pr-3 py-2.5 border-none rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all" 
+                    placeholder="Search topics..." 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </div>
+
+            {/* Quiz Button */}
             <button onClick={() => setShowMasteryQuiz(true)} className="w-full py-3 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:shadow-md transition-all font-bold text-xs flex items-center justify-center gap-2 group">
                 <i className="fa-solid fa-trophy text-amber-500" aria-hidden="true"></i>
                 <span>Mastery Quiz</span>
@@ -277,29 +308,42 @@ const App: React.FC = () => {
         </div>
 
         <nav className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar" aria-label="Course Curriculum">
-            {CURRICULUM.map((level) => (
-              <div key={level.id} className="mb-6">
-                 <h3 className="px-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2">
-                    Level {level.id}
-                 </h3>
-                <div className="space-y-1">
-                  {level.lessons.map((lesson) => {
-                    const isActive = currentLessonId === lesson.id;
-                    return (
-                      <button
-                        key={lesson.id}
-                        onClick={() => handleLessonSelect(level.id, lesson.id)}
-                        aria-current={isActive ? 'page' : undefined}
-                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-all duration-200 ${isActive ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-semibold shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'}`}
-                      >
-                        <i className={`fa-solid fa-circle text-[6px] ${isActive ? 'text-indigo-500' : 'text-slate-300 dark:text-slate-600'}`} aria-hidden="true"></i>
-                        <span className="truncate">{lesson.title}</span>
-                      </button>
-                    );
-                  })}
+            {filteredCurriculum.length > 0 ? (
+                filteredCurriculum.map((level) => (
+                  <div key={level.id} className="mb-6 animate-enter">
+                     <h3 className="px-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        Level {level.id}
+                     </h3>
+                    <div className="space-y-1">
+                      {level.lessons.map((lesson) => {
+                        const isActive = currentLessonId === lesson.id;
+                        return (
+                          <button
+                            key={lesson.id}
+                            onClick={() => handleLessonSelect(level.id, lesson.id)}
+                            aria-current={isActive ? 'page' : undefined}
+                            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-all duration-200 text-left ${isActive ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-semibold shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'}`}
+                          >
+                            <i className={`fa-solid fa-circle text-[6px] flex-shrink-0 ${isActive ? 'text-indigo-500' : 'text-slate-300 dark:text-slate-600'}`} aria-hidden="true"></i>
+                            <span className="truncate">{lesson.title}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))
+            ) : (
+                <div className="p-8 text-center opacity-50 animate-enter">
+                    <div className="text-3xl mb-2">🤔</div>
+                    <p className="text-xs font-bold text-slate-500">No topics found</p>
+                    <button 
+                        onClick={() => setSearchQuery('')}
+                        className="mt-2 text-[10px] text-indigo-500 font-bold hover:underline"
+                    >
+                        Clear Search
+                    </button>
                 </div>
-              </div>
-            ))}
+            )}
         </nav>
         
         <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">

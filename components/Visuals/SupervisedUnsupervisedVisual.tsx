@@ -30,7 +30,7 @@ const SupervisedUnsupervisedVisual: React.FC<{ isAnimating: boolean }> = ({ isAn
   };
 
   return (
-    <div className="relative w-full min-h-[34rem] bg-white rounded-[2.5rem] overflow-hidden border-4 border-slate-50 flex flex-col p-6 shadow-inner transition-all font-sans">
+    <div className="relative w-full h-auto min-h-[32rem] bg-white rounded-[2.5rem] overflow-hidden border-4 border-slate-50 flex flex-col p-6 shadow-inner transition-all font-sans">
       
       {/* Header / Mode Switcher */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 z-10">
@@ -186,7 +186,7 @@ const SupervisedUnsupervisedVisual: React.FC<{ isAnimating: boolean }> = ({ isAn
               ))}
           </div>
 
-          <div className="h-10 mb-4">
+          <div className="h-10 mb-4 w-full">
             <p className="text-sm font-bold text-slate-700 text-center animate-enter" key={step}>
                 {mode === 'supervised' ? (
                     step === 0 ? "1. We start with Labeled Data (we know what is what)." :
