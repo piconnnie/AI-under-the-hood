@@ -32,8 +32,8 @@ const NaiveBayesVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) =
   };
 
   return (
-    <div className="relative w-full h-72 bg-slate-900 rounded-[2.5rem] overflow-hidden border-4 border-slate-800 flex flex-col p-6 shadow-2xl">
-      <div className="flex justify-between items-start mb-6">
+    <div className="relative w-full h-auto min-h-[24rem] bg-slate-900 rounded-[2.5rem] overflow-hidden border-4 border-slate-800 flex flex-col p-6 shadow-2xl">
+      <div className="flex flex-col sm:flex-row justify-between items-start mb-6 gap-4">
         <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Observations</div>
         <div className="flex gap-4">
             <div className="flex items-center gap-2">
@@ -47,9 +47,9 @@ const NaiveBayesVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) =
         </div>
       </div>
 
-      <div className="flex gap-6 flex-1">
+      <div className="flex flex-col sm:flex-row gap-6 flex-1">
         {/* Features Toggles */}
-        <div className="flex flex-col gap-3 w-1/2">
+        <div className="flex flex-col gap-3 w-full sm:w-1/2">
             {(Object.keys(features) as Array<keyof typeof features>).map((key) => (
                 <button 
                     key={key}

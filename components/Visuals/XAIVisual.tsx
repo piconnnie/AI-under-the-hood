@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 
 const XAIVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
@@ -24,7 +25,7 @@ const XAIVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
   ];
 
   return (
-    <div className="relative w-full h-80 bg-slate-900 rounded-[2.5rem] overflow-hidden border-4 border-slate-800 flex flex-col p-8 shadow-2xl">
+    <div className="relative w-full h-auto min-h-[24rem] bg-slate-900 rounded-[2.5rem] overflow-hidden border-4 border-slate-800 flex flex-col p-8 shadow-2xl">
       <div className="flex justify-between items-start mb-6 z-10">
         <div>
           <div className="text-[10px] font-black text-orange-400 uppercase tracking-widest mb-1">XAI Debugger (LIME/SHAP)</div>
@@ -43,9 +44,9 @@ const XAIVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
         </button>
       </div>
 
-      <div className="flex-1 flex gap-8 items-center justify-center relative">
+      <div className="flex-1 flex flex-col sm:flex-row gap-8 items-center justify-center relative">
         {/* The Black Box */}
-        <div className={`relative z-20 w-32 h-32 rounded-3xl border-4 transition-all duration-700 flex flex-col items-center justify-center ${
+        <div className={`relative z-20 w-32 h-32 rounded-3xl border-4 transition-all duration-700 flex flex-col items-center justify-center flex-shrink-0 ${
             prediction ? 'border-orange-500 bg-orange-500/10 shadow-[0_0_40px_rgba(249,115,22,0.2)]' : 'border-slate-700 bg-slate-800'
           }`}>
           <div className="text-3xl mb-1">{prediction ? '✅' : '⚙️'}</div>
@@ -61,7 +62,7 @@ const XAIVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
         </div>
 
         {/* XAI Visualization - Feature Importance Bars */}
-        <div className={`flex-1 space-y-3 transition-all duration-700 ${showXAI ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10 pointer-events-none'}`}>
+        <div className={`flex-1 w-full sm:w-auto space-y-3 transition-all duration-700 ${showXAI ? 'opacity-100 translate-y-0 sm:translate-x-0' : 'opacity-0 translate-y-10 sm:translate-y-0 sm:-translate-x-10 pointer-events-none'}`}>
           <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 border-b border-slate-800 pb-1">Feature Contribution</div>
           {features.map((f, i) => (
             <div key={i} className="group relative">

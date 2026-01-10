@@ -95,15 +95,15 @@ const RAGVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
   };
 
   return (
-    <div className="w-full h-[40rem] bg-slate-900 rounded-[2.5rem] overflow-hidden border-4 border-slate-800 flex flex-col shadow-2xl relative">
+    <div className="w-full h-auto min-h-[40rem] bg-slate-900 rounded-[2.5rem] overflow-hidden border-4 border-slate-800 flex flex-col shadow-2xl relative">
       
       {/* --- TOP: RAG ENGINE --- */}
-      <div className="flex-1 p-6 relative overflow-hidden flex flex-col">
+      <div className="flex-1 p-6 relative overflow-hidden flex flex-col min-h-[300px]">
         {/* Background Grid */}
         <div className="absolute inset-0 opacity-10 pointer-events-none" 
              style={{ backgroundImage: 'radial-gradient(#6366f1 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
         
-        <div className="flex justify-between items-start mb-4 z-10">
+        <div className="flex flex-col sm:flex-row justify-between items-start mb-4 z-10 gap-2">
              <div className="flex items-center gap-2">
                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></div>
                  <span className="text-[10px] font-black uppercase tracking-widest text-indigo-300">RAG Engine Visualization</span>
@@ -119,48 +119,52 @@ const RAGVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
              </div>
         </div>
 
-        <div className="flex-1 flex gap-4 relative z-10">
+        {/* Engine Components - Stacks on mobile, Row on desktop */}
+        <div className="flex-1 flex flex-col lg:flex-row gap-4 relative z-10">
+            
             {/* LEFT: Vector DB */}
-            <div className="w-1/3 flex flex-col gap-2 relative">
+            <div className="w-full lg:w-1/3 flex flex-col gap-2 relative">
                 <span className="text-[9px] font-black uppercase text-slate-500 text-center">Vector Database</span>
-                {DOCUMENTS.map(doc => (
-                    <div 
-                        key={doc.id}
-                        className={`p-3 rounded-xl border-2 transition-all duration-500 relative overflow-hidden ${
-                            highlightedDoc === doc.id 
-                            ? `${doc.borderColor} bg-slate-800 scale-105 shadow-[0_0_20px_rgba(255,255,255,0.1)]` 
-                            : 'border-slate-800 bg-slate-800/50 opacity-60'
-                        }`}
-                    >
-                        <div className="flex justify-between items-center mb-1">
-                            <span className={`text-[10px] font-bold uppercase ${highlightedDoc === doc.id ? 'text-white' : 'text-slate-500'}`}>{doc.title}</span>
-                            {/* Vector Representation */}
-                            <div className="flex gap-0.5">
-                                {[1,2,3,4].map(i => <div key={i} className={`w-1 h-3 rounded-full ${doc.color} opacity-80`} />)}
+                <div className="flex flex-col gap-2">
+                    {DOCUMENTS.map(doc => (
+                        <div 
+                            key={doc.id}
+                            className={`p-3 rounded-xl border-2 transition-all duration-500 relative overflow-hidden ${
+                                highlightedDoc === doc.id 
+                                ? `${doc.borderColor} bg-slate-800 scale-105 shadow-[0_0_20px_rgba(255,255,255,0.1)]` 
+                                : 'border-slate-800 bg-slate-800/50 opacity-60'
+                            }`}
+                        >
+                            <div className="flex justify-between items-center mb-1">
+                                <span className={`text-[10px] font-bold uppercase ${highlightedDoc === doc.id ? 'text-white' : 'text-slate-500'}`}>{doc.title}</span>
+                                {/* Vector Representation */}
+                                <div className="flex gap-0.5">
+                                    {[1,2,3,4].map(i => <div key={i} className={`w-1 h-3 rounded-full ${doc.color} opacity-80`} />)}
+                                </div>
                             </div>
+                            <div className="text-[8px] text-slate-400 truncate">{doc.content}</div>
+                            
+                            {/* Search Scanner Effect */}
+                            {step === 'searching' && (
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-[shimmer_1s_infinite]" />
+                            )}
                         </div>
-                        <div className="text-[8px] text-slate-400 truncate">{doc.content}</div>
-                        
-                        {/* Search Scanner Effect */}
-                        {step === 'searching' && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-[shimmer_1s_infinite]" />
-                        )}
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
 
             {/* MIDDLE: Process Visualization */}
-            <div className="w-1/3 flex flex-col items-center justify-center relative">
+            <div className="w-full lg:w-1/3 flex flex-col items-center justify-center relative min-h-[100px]">
                 
                 {/* 1. Query Vector Flying */}
                 <div 
-                    className={`absolute transition-all duration-1000 ease-in-out flex flex-col items-center gap-2
-                    ${step === 'vectorizing' ? 'opacity-100 scale-100 top-1/2' : ''}
-                    ${step === 'searching' ? 'opacity-100 top-10 scale-75' : ''}
-                    ${['idle', 'augmenting', 'generating'].includes(step) ? 'opacity-0 scale-50' : ''}
+                    className={`absolute transition-all duration-1000 ease-in-out flex flex-col items-center gap-2 z-20
+                    ${step === 'vectorizing' ? 'opacity-100 scale-100 top-1/2 -translate-y-1/2' : ''}
+                    ${step === 'searching' ? 'opacity-100 lg:top-10 top-0 scale-75' : ''}
+                    ${['idle', 'augmenting', 'generating'].includes(step) ? 'opacity-0 scale-50 top-1/2' : ''}
                     `}
                 >
-                    <div className="bg-white text-slate-900 px-3 py-1 rounded-full text-[10px] font-bold shadow-lg whitespace-nowrap mb-2 max-w-[120px] truncate">
+                    <div className="bg-white text-slate-900 px-3 py-1 rounded-full text-[10px] font-bold shadow-lg whitespace-nowrap mb-2 max-w-[200px] truncate">
                         {activeQuery?.text}
                     </div>
                     <div className="text-xl">⬇️</div>
@@ -174,7 +178,7 @@ const RAGVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
 
                 {/* 2. Document Flying to Context */}
                 {step === 'augmenting' && highlightedDoc && (
-                    <div className="absolute top-10 left-0 w-full h-full flex items-center justify-center z-20">
+                    <div className="absolute top-10 left-0 w-full h-full flex items-center justify-center z-20 pointer-events-none">
                          <div className={`p-4 rounded-xl bg-emerald-500 text-white shadow-2xl animate-[flyToContext_1s_ease-in-out_forwards] flex items-center gap-3`}>
                             <span className="text-xl">📄</span>
                             <div>
@@ -185,18 +189,18 @@ const RAGVisual: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
                     </div>
                 )}
 
-                {/* Arrow Flow Lines */}
+                {/* Arrow Flow Lines (Desktop Only) */}
                 {step === 'searching' && (
-                   <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                   <svg className="absolute inset-0 w-full h-full pointer-events-none hidden lg:block">
                        <path d="M 50 150 Q 100 150 100 50" stroke="#6366f1" strokeWidth="2" strokeDasharray="4" fill="none" className="animate-[dash_1s_linear_infinite]" />
                    </svg>
                 )}
             </div>
 
             {/* RIGHT: LLM Context Window */}
-            <div className="w-1/3 flex flex-col gap-2 relative">
+            <div className="w-full lg:w-1/3 flex flex-col gap-2 relative">
                 <span className="text-[9px] font-black uppercase text-slate-500 text-center">LLM Prompt Window</span>
-                <div className={`flex-1 bg-slate-800 border-2 ${step === 'generating' ? 'border-indigo-500 shadow-[0_0_20px_rgba(99,102,241,0.2)]' : 'border-slate-700'} rounded-xl p-3 flex flex-col gap-2 transition-all duration-300`}>
+                <div className={`flex-1 bg-slate-800 border-2 ${step === 'generating' ? 'border-indigo-500 shadow-[0_0_20px_rgba(99,102,241,0.2)]' : 'border-slate-700'} rounded-xl p-3 flex flex-col gap-2 transition-all duration-300 min-h-[180px]`}>
                     
                     {/* System Prompt */}
                     <div className="bg-slate-900/50 p-2 rounded border border-slate-600 opacity-60">

@@ -16,9 +16,9 @@ const CNN: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
   const { x, y } = getFilterCoordinates(filterPos);
 
   return (
-    <div className="relative w-full h-72 bg-slate-900 rounded-xl overflow-hidden flex flex-col items-center justify-center border-4 border-slate-800 p-6">
+    <div className="relative w-full min-h-[28rem] h-auto bg-slate-900 rounded-xl overflow-hidden flex flex-col items-center justify-center border-4 border-slate-800 p-6">
       
-      <div className="flex items-center gap-8">
+      <div className="flex flex-col sm:flex-row items-center gap-8">
         {/* Input Image Grid */}
         <div className="relative">
             <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 text-center">Input Image (Pixels)</div>
@@ -40,7 +40,7 @@ const CNN: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
             </div>
         </div>
 
-        <div className="text-2xl text-slate-600">➔</div>
+        <div className="text-2xl text-slate-600 rotate-90 sm:rotate-0">➔</div>
 
         {/* Feature Map */}
         <div className="flex flex-col items-center gap-2">
@@ -57,7 +57,7 @@ const CNN: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
       </div>
 
       {/* Slider Control */}
-      <div className="mt-8 w-64 bg-slate-800 p-3 rounded-xl border border-slate-700 flex flex-col gap-2">
+      <div className="mt-8 w-full max-w-[250px] bg-slate-800 p-3 rounded-xl border border-slate-700 flex flex-col gap-2">
           <div className="flex justify-between text-[8px] font-bold text-slate-400 uppercase">
               <span>Scan Position</span>
               <span>{filterPos + 1} / 16</span>
