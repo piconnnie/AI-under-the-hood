@@ -52,9 +52,38 @@ import MasteryQuiz from './components/MasteryQuiz';
 import { ConceptExplainer } from './components/ConceptExplainer';
 import ErrorBoundary from './components/ErrorBoundary';
 
+const STORAGE_KEY = 'ai_hood_progress_v1';
+
+interface UserProgress {
+  currentLevelId: LevelId;
+  currentLessonId: string;
+  completedLessonIds: string[];
+}
+
 const App: React.FC = () => {
-  const [currentLevelId, setCurrentLevelId] = useState<LevelId>(1);
-  const [currentLessonId, setCurrentLessonId] = useState<string>('ai-hierarchy');
+  // Load initial state from localStorage
+  const loadProgress = (): UserProgress => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.error("Failed to load progress", e);
+    }
+    return {
+      currentLevelId: 1,
+      currentLessonId: 'ai-hierarchy',
+      completedLessonIds: []
+    };
+  };
+
+  const initialProgress = loadProgress();
+
+  const [currentLevelId, setCurrentLevelId] = useState<LevelId>(initialProgress.currentLevelId);
+  const [currentLessonId, setCurrentLessonId] = useState<string>(initialProgress.currentLessonId);
+  const [completedLessonIds, setCompletedLessonIds] = useState<string[]>(initialProgress.completedLessonIds);
+  
   const [isAnimating, setIsAnimating] = useState(false);
   const [quizAnswered, setQuizAnswered] = useState<boolean | null>(null);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
@@ -79,6 +108,33 @@ const App: React.FC = () => {
       document.documentElement.classList.remove('dark');
     }
   }, [theme]);
+
+  // Persist Progress
+  useEffect(() => {
+    const progress: UserProgress = {
+      currentLevelId,
+      currentLessonId,
+      completedLessonIds
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  }, [currentLevelId, currentLessonId, completedLessonIds]);
+
+  const markLessonComplete = (lessonId: string) => {
+    setCompletedLessonIds(prev => {
+        if (prev.includes(lessonId)) return prev;
+        return [...prev, lessonId];
+    });
+  };
+
+  const handleResetProgress = () => {
+      if (window.confirm("Are you sure you want to reset your learning progress?")) {
+          localStorage.removeItem(STORAGE_KEY);
+          setCurrentLevelId(1);
+          setCurrentLessonId('ai-hierarchy');
+          setCompletedLessonIds([]);
+          window.location.reload();
+      }
+  };
 
   // Simulate live visitors
   useEffect(() => {
@@ -154,6 +210,9 @@ const App: React.FC = () => {
   };
 
   const goToNextLesson = () => {
+    // Mark current as complete when leaving via "Next"
+    markLessonComplete(currentLessonId);
+
     if (currentIndex < allLessons.length - 1) {
       const next = allLessons[currentIndex + 1];
       handleLessonSelect(next.levelId, next.id);
@@ -192,7 +251,12 @@ const App: React.FC = () => {
   const handleQuizSubmit = (index: number) => {
     if (quizAnswered !== null) return;
     setSelectedOptionIndex(index);
-    setQuizAnswered(currentLesson.quiz.options[index].isCorrect);
+    const isCorrect = currentLesson.quiz.options[index].isCorrect;
+    setQuizAnswered(isCorrect);
+    
+    if (isCorrect) {
+        markLessonComplete(currentLessonId);
+    }
   };
 
   const toggleSimulation = () => {
@@ -317,6 +381,7 @@ const App: React.FC = () => {
                     <div className="space-y-1">
                       {level.lessons.map((lesson) => {
                         const isActive = currentLessonId === lesson.id;
+                        const isCompleted = completedLessonIds.includes(lesson.id);
                         return (
                           <button
                             key={lesson.id}
@@ -324,8 +389,12 @@ const App: React.FC = () => {
                             aria-current={isActive ? 'page' : undefined}
                             className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm rounded-lg transition-all duration-200 text-left ${isActive ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-semibold shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'}`}
                           >
-                            <i className={`fa-solid fa-circle text-[6px] flex-shrink-0 ${isActive ? 'text-indigo-500' : 'text-slate-300 dark:text-slate-600'}`} aria-hidden="true"></i>
-                            <span className="truncate">{lesson.title}</span>
+                            {isCompleted ? (
+                                <i className="fa-solid fa-circle-check text-emerald-500 text-xs flex-shrink-0" aria-hidden="true"></i>
+                            ) : (
+                                <i className={`fa-solid fa-circle text-[6px] flex-shrink-0 ${isActive ? 'text-indigo-500' : 'text-slate-300 dark:text-slate-600'}`} aria-hidden="true"></i>
+                            )}
+                            <span className={`truncate ${isCompleted ? 'text-slate-600 dark:text-slate-300' : ''}`}>{lesson.title}</span>
                           </button>
                         );
                       })}
@@ -354,8 +423,16 @@ const App: React.FC = () => {
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
                 <span>{visitorCount.toLocaleString()} Learners</span>
             </div>
-            <div className="mt-2 text-[10px] text-slate-400 dark:text-slate-600 text-center font-medium">
-                © 2026 Faraz Sharique Ali
+            
+            <div className="flex justify-between items-center mt-2">
+                <div className="text-[10px] text-slate-400 dark:text-slate-600 font-medium">
+                    © 2026 Faraz Sharique Ali
+                </div>
+                {completedLessonIds.length > 0 && (
+                    <button onClick={handleResetProgress} className="text-[9px] text-slate-400 hover:text-rose-500 underline" title="Clear Progress">
+                        Reset
+                    </button>
+                )}
             </div>
         </div>
       </aside>
@@ -384,7 +461,7 @@ const App: React.FC = () => {
                     <i className={`fa-solid ${theme === 'light' ? 'fa-moon' : 'fa-sun'}`} aria-hidden="true"></i>
                 </button>
                 <div className="text-xs font-bold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-full">
-                    {Math.round(((currentIndex + 1) / allLessons.length) * 100)}%
+                    {Math.round((completedLessonIds.length / allLessons.length) * 100)}%
                 </div>
             </div>
         </header>
@@ -399,6 +476,11 @@ const App: React.FC = () => {
                     <div className="flex items-center gap-2 mb-2">
                         <span className="px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold uppercase tracking-wider rounded">Level {currentLevel.id}</span>
                         <span className="text-slate-400 text-xs font-medium">Lesson {currentIndex + 1} of {allLessons.length}</span>
+                        {completedLessonIds.includes(currentLessonId) && (
+                            <span className="ml-2 px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1">
+                                <i className="fa-solid fa-check"></i> Completed
+                            </span>
+                        )}
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">{currentLesson.title}</h1>
                     <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm sm:text-base">{currentLesson.subtitle}</p>
@@ -494,13 +576,17 @@ const App: React.FC = () => {
                     {showEli5 && (
                         <div id="eli5-content" className="bg-amber-50/50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-amber-900/30 p-6 shadow-sm">
                             <h4 className="text-xs font-black text-amber-400 dark:text-amber-500 uppercase tracking-widest mb-3">Explain Like I'm 5</h4>
-                            <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">"{currentLesson.eli5}"</p>
+                            <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                                "{currentLesson.eli5}"
+                            </p>
                         </div>
                     )}
                     {showAnalogy && (
                         <div id="analogy-content" className="bg-purple-50/50 dark:bg-purple-900/10 rounded-2xl border border-purple-100 dark:border-purple-900/30 p-6 shadow-sm">
                             <h4 className="text-xs font-black text-purple-400 dark:text-purple-500 uppercase tracking-widest mb-3">Analogy: {currentLesson.analogy.title}</h4>
-                            <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">{currentLesson.analogy.description}</p>
+                            <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                                {currentLesson.analogy.description}
+                            </p>
                         </div>
                     )}
                 </div>
@@ -515,7 +601,9 @@ const App: React.FC = () => {
                          <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Quick Check</h4>
                       </div>
                       
-                      <p className="text-base font-bold text-slate-900 dark:text-white mb-6">{currentLesson.quiz.question}</p>
+                      <p className="text-base font-bold text-slate-900 dark:text-white mb-6">
+                          {currentLesson.quiz.question}
+                      </p>
                       
                       <div className="space-y-3 flex-1" role="radiogroup" aria-label="Quiz options">
                         {currentLesson.quiz.options.map((option, idx) => {
@@ -549,20 +637,31 @@ const App: React.FC = () => {
                       {quizAnswered !== null && (
                         <div className="mt-6 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl border border-indigo-100 dark:border-indigo-800 animate-enter" role="alert">
                           <p className="text-[10px] font-bold text-indigo-400 uppercase mb-1">Insight</p>
-                          <p className="text-xs text-indigo-900 dark:text-indigo-200 font-medium leading-relaxed">{currentLesson.quiz.explanation}</p>
+                          <p className="text-xs text-indigo-900 dark:text-indigo-200 font-medium leading-relaxed">
+                              {currentLesson.quiz.explanation}
+                          </p>
                         </div>
                       )}
                  </div>
               </div>
             )}
 
-            {/* Takeaway */}
-            <div className="bg-indigo-600 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-8 opacity-10 text-9xl transform translate-x-10 -translate-y-10" aria-hidden="true">
-                    <i className="fa-solid fa-quote-right"></i>
+            {/* Takeaway - Fixed Overflow Issues for Tooltips */}
+            <div className="bg-indigo-600 rounded-2xl shadow-lg relative">
+                {/* Decorative background container with clipping */}
+                <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
+                    <div className="absolute top-0 right-0 p-8 opacity-10 text-9xl transform translate-x-10 -translate-y-10 text-white" aria-hidden="true">
+                        <i className="fa-solid fa-quote-right"></i>
+                    </div>
                 </div>
-                <p className="text-[10px] font-bold text-indigo-200 uppercase tracking-widest mb-3 relative z-10">Key Takeaway</p>
-                <p className="text-lg sm:text-xl font-bold leading-relaxed relative z-10">{currentLesson.takeaway}</p>
+                
+                {/* Content container allowing tooltip overflow */}
+                <div className="relative z-10 p-8 text-white">
+                    <p className="text-[10px] font-bold text-indigo-200 uppercase tracking-widest mb-3">Key Takeaway</p>
+                    <p className="text-lg sm:text-xl font-bold leading-relaxed">
+                        {currentLesson.takeaway}
+                    </p>
+                </div>
             </div>
 
             {/* Next Lesson Navigation */}
